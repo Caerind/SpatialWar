@@ -1,24 +1,21 @@
 #ifndef CLIENTENTITYMANAGER_HPP
 #define CLIENTENTITYMANAGER_HPP
 
-#include <iostream>
+#include <SFML/Network/TcpSocket.hpp>
+#include <SFML/Network/IpAddress.hpp>
 
-#include <SFML/Network.hpp>
+#include "../EntityManager.hpp"
+#include "../Components.hpp"
+#include "../Systems.hpp"
 
-#include "../../Lib/Aharos/Application/Application.hpp"
-#include "../../Lib/EntitySystem/EntityManager.hpp"
-
-#include "Components.hpp"
-#include "Systems.hpp"
-
-class ClientEntityManager : public ses::EntityManager
+class ClientEntityManager : public EntityManager
 {
     public:
         ClientEntityManager(sf::TcpSocket& socket);
 
         void sendPacket(sf::Packet& packet);
         void handlePackets();
-        void handlePacket(sf::Packet& packet); // Maybe should inherrit from EntityManager ? To have the solo packet already done
+        void handlePacket(sf::Packet& packet);
 
     private:
         sf::TcpSocket& mSocket;

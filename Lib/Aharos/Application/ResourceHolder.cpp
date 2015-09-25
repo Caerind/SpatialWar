@@ -102,4 +102,13 @@ void ResourceHolder::releaseShader(std::string const& id)
     }
 }
 
+void ResourceHolder::releaseAll()
+{
+    mSoundBuffers.clear();
+    mFonts.clear();
+    mImages.clear();
+    mTextures.clear();
+    mShaders.clear();
+}
+
 } // namespace ah

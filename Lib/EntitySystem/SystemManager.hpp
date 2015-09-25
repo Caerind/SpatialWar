@@ -35,6 +35,9 @@ class SystemManager
         void handlePacket(std::string const& systemId, sf::Packet& packet);
         void entityUpdate(sf::Int32 const& entityId);
 
+        void setManager(std::shared_ptr<EntityManager> entities);
+        std::shared_ptr<EntityManager> getManager();
+
     protected:
         std::shared_ptr<EntityManager> mEntityManager;
         std::map<std::string,System::Ptr> mSystems;

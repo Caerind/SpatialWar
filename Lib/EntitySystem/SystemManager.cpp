@@ -16,7 +16,11 @@ SystemManager::SystemManager(EntityManager::Ptr entityManager)
 SystemManager::~SystemManager()
 {
     removeSystems();
-    mEntityManager->mSystems = nullptr;
+    if (mEntityManager != nullptr)
+    {
+        mEntityManager->mSystems = nullptr;
+        mEntityManager = nullptr;
+    }
 }
 
 bool SystemManager::hasSystem(std::string const& systemId)
@@ -43,6 +47,21 @@ void SystemManager::entityUpdate(sf::Int32 const& entityId)
     {
         itr->second->entityUpdate(entityId);
     }
+}
+
+void SystemManager::setManager(std::shared_ptr<EntityManager> entities)
+{
+    if (mEntityManager != nullptr)
+    {
+        mEntityManager->mSystems = nullptr;
+        mEntityManager = nullptr;
+    }
+    mEntityManager = entities;
+}
+
+std::shared_ptr<EntityManager> SystemManager::getManager()
+{
+    return mEntityManager;
 }
 
 } // namespace ses

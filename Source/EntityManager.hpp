@@ -14,7 +14,7 @@ class EntityManager : public ses::EntityManager
     public:
         EntityManager();
 
-        void handlePacket(sf::Packet& packet);
+        virtual void handlePacket(sf::Packet& packet);
 };
 
 #endif // ENTITYMANAGER_HPP

@@ -3,6 +3,12 @@
 GameState::GameState(ah::StateManager& manager) : ah::State(manager)
 {
     mType = GameState::getID();
+    World::init(false);
+}
+
+GameState::~GameState()
+{
+    World::terminate();
 }
 
 std::string GameState::getID()
@@ -12,27 +18,25 @@ std::string GameState::getID()
 
 bool GameState::handleEvent(sf::Event const& event)
 {
-    //World::instance().handleEvent(event);
+    World::handleEvent(event);
     return true;
 }
 
 bool GameState::update(sf::Time dt)
 {
-    //World::instance().update(dt);
+    World::update(dt);
     return true;
 }
 
 void GameState::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    //World::instance().render(target);
+    World::render(target,states);
 }
 
 void GameState::onActivate()
 {
-    //World::instance().initialize();
 }
 
 void GameState::onDeactivate()
 {
-    //World::instance().terminate();
 }

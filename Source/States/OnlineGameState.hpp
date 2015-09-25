@@ -2,14 +2,18 @@
 #define ONLINEGAMESTATE_HPP
 
 #include "../../Lib/Aharos/Application/State.hpp"
+#include "../../Lib/Aharos/Application/Application.hpp"
 
 #include "../Configuration.hpp"
+#include "../World.hpp"
+
 #include "../Client/ClientEntityManager.hpp"
 
 class OnlineGameState : public ah::State
 {
     public:
         OnlineGameState(ah::StateManager& manager);
+        ~OnlineGameState();
 
         static std::string getID();
 
@@ -19,9 +23,6 @@ class OnlineGameState : public ah::State
 
         void onActivate();
         void onDeactivate();
-
-    private:
-        ClientEntityManager mManager;
 };
 
 #endif // ONLINEGAMESTATE_HPP

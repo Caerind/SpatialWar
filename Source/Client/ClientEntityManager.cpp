@@ -1,7 +1,7 @@
 #include "ClientEntityManager.hpp"
 
 ClientEntityManager::ClientEntityManager(sf::TcpSocket& socket)
-: ses::EntityManager()
+: EntityManager()
 , mSocket(socket)
 {
     mConnected = false;

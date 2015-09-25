@@ -1,8 +1,14 @@
 #include "OnlineGameState.hpp"
 
-OnlineGameState::OnlineGameState(ah::StateManager& manager) : ah::State(manager), mManager(Configuration::getSocket())
+OnlineGameState::OnlineGameState(ah::StateManager& manager) : ah::State(manager)
 {
     mType = OnlineGameState::getID();
+    World::init(true);
+}
+
+OnlineGameState::~OnlineGameState()
+{
+    World::terminate();
 }
 
 std::string OnlineGameState::getID()
@@ -12,27 +18,25 @@ std::string OnlineGameState::getID()
 
 bool OnlineGameState::handleEvent(sf::Event const& event)
 {
-    //World::instance().handleEvent(event);
+    World::handleEvent(event);
     return true;
 }
 
 bool OnlineGameState::update(sf::Time dt)
 {
-    //World::instance().update(dt);
+    World::update(dt);
     return true;
 }
 
 void OnlineGameState::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    //World::instance().render(target);
+    World::render(target,states);
 }
 
 void OnlineGameState::onActivate()
 {
-    //World::instance().initialize();
 }
 
 void OnlineGameState::onDeactivate()
 {
-    //World::instance().terminate();
 }

@@ -48,6 +48,8 @@ class ResourceHolder
         void releaseTexture(std::string const& id);
         void releaseShader(std::string const& id);
 
+        void releaseAll();
+
     private:
         std::map<std::string,sf::SoundBuffer> mSoundBuffers;
         std::map<std::string,sf::Font> mFonts;
