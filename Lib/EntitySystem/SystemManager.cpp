@@ -57,6 +57,10 @@ void SystemManager::setManager(std::shared_ptr<EntityManager> entities)
         mEntityManager = nullptr;
     }
     mEntityManager = entities;
+    if (mEntityManager != nullptr)
+    {
+        mEntityManager->mSystems = this;
+    }
 }
 
 std::shared_ptr<EntityManager> SystemManager::getManager()

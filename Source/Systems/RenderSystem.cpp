@@ -2,8 +2,9 @@
 #include "../../Lib/EntitySystem/EntityManager.hpp"
 
 RenderSystem::RenderSystem(ses::EntityManager::Ptr entityManager)
-: System(entityManager)
+: ses::System(entityManager)
 {
+    mFilter.requires(SpriteComponent::getId());
 }
 
 std::string RenderSystem::getId()
@@ -17,7 +18,16 @@ void RenderSystem::render(sf::RenderTarget& target, sf::RenderStates states)
     {
         if (mEntityManager->hasComponent<SpriteComponent>(mEntities[i]))
         {
-            target.draw(mEntityManager->getComponent<SpriteComponent>(mEntities[i]));
+            SpriteComponent& s = mEntityManager->getComponent<SpriteComponent>(mEntities[i]);
+            if (mEntityManager->hasComponent<TransformComponent>(mEntities[i]))
+            {
+                TransformComponent& t = mEntityManager->getComponent<TransformComponent>(mEntities[i]);
+                s.setOrigin(t.getOrigin());
+                s.setPosition(t.getPosition());
+                s.setRotation(t.getRotation());
+                s.setScale(t.getScale());
+            }
+            target.draw(s);
         }
     }
 }

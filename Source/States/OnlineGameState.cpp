@@ -3,7 +3,7 @@
 OnlineGameState::OnlineGameState(ah::StateManager& manager) : ah::State(manager)
 {
     mType = OnlineGameState::getID();
-    World::init(true);
+    World::init(true,false);
 }
 
 OnlineGameState::~OnlineGameState()

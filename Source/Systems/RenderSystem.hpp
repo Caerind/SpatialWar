@@ -3,10 +3,10 @@
 
 #include "../../Lib/EntitySystem/System.hpp"
 
-#include "../Components.hpp"
-
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+
+#include "../Components.hpp"
 
 class RenderSystem : public ses::System
 {
