@@ -15,10 +15,18 @@ class AsteroidComponent : public ses::Component, public sf::Drawable
 
         static std::string getId();
 
+        void setDirection(sf::Vector2f direction);
+        sf::Vector2f getDirection() const;
+
+        void setSpeed(float speed);
+        float getSpeed() const;
+
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     private:
         sf::Sprite mSprite;
+        sf::Vector2f mDirection;
+        float mSpeed;
 };
 
 #endif // ASTEROIDCOMPONENT_HPP
