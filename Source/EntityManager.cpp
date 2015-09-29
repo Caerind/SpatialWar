@@ -6,10 +6,8 @@ EntityManager::EntityManager()
     setPrefab("Player",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        TransformComponent& t = addComponent<TransformComponent>(id);
-        SpriteComponent& s = addComponent<SpriteComponent>(id,"playerShip");
-        t.setOrigin(s.getGlobalBounds().width/2,s.getGlobalBounds().height/2);
-        t.setPosition(400,300);
+        addComponent<TransformComponent>(id);
+        addComponent<ShipComponent>(id);
         addComponent<PlayerComponent>(id);
         return id;
     });

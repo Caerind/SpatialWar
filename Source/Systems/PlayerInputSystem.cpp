@@ -7,7 +7,6 @@ PlayerInputSystem::PlayerInputSystem(ses::EntityManager::Ptr entityManager)
 , ah::ActionTarget(Configuration::getPlayerInput())
 {
     mFilter.requires(TransformComponent::getId());
-    mFilter.requires(SpriteComponent::getId());
     mFilter.requires(PlayerComponent::getId());
 }
 
@@ -47,14 +46,7 @@ void PlayerInputSystem::update(sf::Time dt)
                 mvt.x += 1.f;
             }
 
-            float speed = 300.f;
-
-            if (isActive("speed"))
-            {
-                speed *= 1.5f;
-            }
-
-            mvt *= speed * dt.asSeconds();
+            mvt *= 300.f * dt.asSeconds();
 
             if (mvt != sf::Vector2f())
             {
@@ -69,7 +61,7 @@ void PlayerInputSystem::update(sf::Time dt)
         // Look At
         {
             sf::Vector2f d = mPos - t.getPosition();
-            float rotation = 180 - atan2(d.x,d.y) * 180 / 3.14159265;
+            float rotation = 180.f - atan2(d.x,d.y) * 180.f / 3.14159265f;
             if (rotation != t.getRotation())
             {
                 sf::Packet packet;
@@ -78,7 +70,8 @@ void PlayerInputSystem::update(sf::Time dt)
             }
         }
 
-        World::getView().setCenter(t.getPosition());
+
+
         ah::Application::instance().setDebugInfo("Position",lp::to_string(t.getPosition().x) + " " + lp::to_string(t.getPosition().y));
     }
 

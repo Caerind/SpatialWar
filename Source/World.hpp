@@ -12,6 +12,7 @@
 #include "../Lib/EntitySystem/SystemManager.hpp"
 
 #include "Configuration.hpp"
+#include "Space.hpp"
 
 #include "Systems.hpp"
 #include "Components.hpp"
@@ -32,6 +33,7 @@ class World
         //static ses::SystemManager& getSystems();
         static ah::ResourceHolder& getResources();
         static sf::View& getView();
+        static Space& getSpace();
 
     private:
         World();
@@ -45,6 +47,7 @@ class World
         ses::SystemManager mSystems;
         ah::ResourceHolder mResources;
         sf::View mView;
+        Space mSpace;
 };
 
 #endif // WORLD_HPP

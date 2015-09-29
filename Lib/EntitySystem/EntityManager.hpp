@@ -68,9 +68,6 @@ class EntityManager
         std::map<std::string,Prefab> mPrefabs;
 
         // Event Management
-        sf::Thread mEventThread;
-        sf::Mutex mMutex;
-        bool mRunning;
         std::vector<sf::Packet> mPackets;
 };
 

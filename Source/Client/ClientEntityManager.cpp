@@ -15,27 +15,24 @@ void ClientEntityManager::sendPacket(sf::Packet& packet)
 
 void ClientEntityManager::handlePackets()
 {
-    while (mRunning)
+    if (mConnected)
     {
-        if (mConnected)
+        sf::Packet m;
+        while (mSocket.receive(m) == sf::Socket::Done && mSystems != nullptr)
         {
-            sf::Packet m;
-            while (mSocket.receive(m) == sf::Socket::Done && mSystems != nullptr)
-            {
-                handlePacket(m);
-            }
+            handlePacket(m);
+        }
+    }
+    else
+    {
+        if (mSocket.connect(sf::IpAddress::LocalHost, 53000) == sf::Socket::Done)
+        {
+            std::cout << "Client :: Connexion reussie" << std::endl;
+            mConnected = true;
         }
         else
         {
-            if (mSocket.connect(sf::IpAddress::LocalHost, 53000) == sf::Socket::Done)
-            {
-                std::cout << "Client :: Connexion reussie" << std::endl;
-                mConnected = true;
-            }
-            else
-            {
-                std::cout << "Client :: Impossible de se connecter" << std::endl;
-            }
+            std::cout << "Client :: Impossible de se connecter" << std::endl;
         }
     }
 }

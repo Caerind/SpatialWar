@@ -33,35 +33,32 @@ void ServerEntityManager::sendPacket(sf::Packet& packet)
 
 void ServerEntityManager::handlePackets()
 {
-    while (mRunning)
+    if (mConnected)
     {
-        if (mConnected)
+        sf::Packet m;
+        while (mSocket.receive(m) == sf::Socket::Done && mSystems != nullptr)
         {
-            sf::Packet m;
-            while (mSocket.receive(m) == sf::Socket::Done && mSystems != nullptr)
+            handlePacket(m);
+        }
+    }
+    else
+    {
+        if (mListener.listen(53000) == sf::Socket::Done)
+        {
+            std::cout << "Server :: Port ouvert" << std::endl;
+            if (mListener.accept(mSocket) == sf::Socket::Done)
             {
-                handlePacket(m);
+                std::cout << "Server :: Connexion ok" << std::endl;
+                mConnected = true;
+            }
+            else
+            {
+                std::cout << "Server :: Client non accepte" << std::endl;
             }
         }
         else
         {
-            if (mListener.listen(53000) == sf::Socket::Done)
-            {
-                std::cout << "Server :: Port ouvert" << std::endl;
-                if (mListener.accept(mSocket) == sf::Socket::Done)
-                {
-                    std::cout << "Server :: Connexion ok" << std::endl;
-                    mConnected = true;
-                }
-                else
-                {
-                    std::cout << "Server :: Client non accepte" << std::endl;
-                }
-            }
-            else
-            {
-                std::cout << "Server :: Port non ouvert" << std::endl;
-            }
+            std::cout << "Server :: Port non ouvert" << std::endl;
         }
     }
 }

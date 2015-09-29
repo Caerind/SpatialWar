@@ -26,17 +26,15 @@ void MovementSystem::handlePacket(sf::Packet& packet)
             sf::Int32 entityId;
             sf::Vector2f mvt;
             packet >> entityId >> mvt;
+            // Move entity
             if (mEntityManager->hasComponent<TransformComponent>(entityId))
             {
                 mEntityManager->getComponent<TransformComponent>(entityId).move(mvt);
-                /*
-                if (World::isServer())
-                {
-                    sf::Packet packet;
-                    packet << 100 << 100 << 100 << entityId << mvt;
-                    mEntityManager->sendPacket(packet);
-                }
-                */
+            }
+            // If the entity is the player, move his view
+            if (mEntityManager->hasComponent<PlayerComponent>(entityId))
+            {
+                mEntityManager->getComponent<PlayerComponent>(entityId).getView().move(mvt);
             }
         } break;
 
@@ -48,14 +46,6 @@ void MovementSystem::handlePacket(sf::Packet& packet)
             if (mEntityManager->hasComponent<TransformComponent>(entityId))
             {
                 mEntityManager->getComponent<TransformComponent>(entityId).setRotation(rotation);
-                /*
-                if (World::isServer())
-                {
-                    sf::Packet packet;
-                    packet << 105 << 105 << 105 << entityId << rotation;
-                    mEntityManager->sendPacket(packet);
-                }
-                */
             }
         } break;
 

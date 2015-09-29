@@ -5,20 +5,13 @@ namespace ses
 {
 
 EntityManager::EntityManager()
-: mEventThread(&EntityManager::handlePackets,this)
 {
     mSystems = nullptr;
-    mRunning = true;
-    mEventThread.launch();
     mId = 0;
 }
 
 EntityManager::~EntityManager()
 {
-    mMutex.lock();
-    mRunning = false;
-    mMutex.unlock();
-    mEventThread.wait();
     if (mSystems != nullptr)
     {
         mSystems->removeSystems();
@@ -113,22 +106,17 @@ sf::Int32 EntityManager::usePrefab(std::string const& prefabId)
 
 void EntityManager::sendPacket(sf::Packet& packet)
 {
-    sf::Lock lock(mMutex);
     mPackets.push_back(packet);
 }
 
 void EntityManager::handlePackets()
 {
-    while (mRunning)
+    while (!mPackets.empty() && mSystems != nullptr)
     {
-        sf::Lock lock(mMutex);
-        while (!mPackets.empty() && mSystems != nullptr)
-        {
-            handlePacket(mPackets.back());
-            mPackets.pop_back();
-        }
-        mPackets.clear();
+        handlePacket(mPackets.back());
+        mPackets.pop_back();
     }
+    mPackets.clear();
 }
 
 void EntityManager::handlePacket(sf::Packet& packet)

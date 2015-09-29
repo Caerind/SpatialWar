@@ -31,7 +31,7 @@ void Application::run()
 			if (mStates.empty())
                 close();
 
-			std::cout << std::flush;
+			//std::cout << std::flush;
 
 			repaint = true;
 		}

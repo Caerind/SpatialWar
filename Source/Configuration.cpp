@@ -23,11 +23,6 @@ Configuration::Configuration()
     (*mPlayerInput)["action1"] = thor::Action(sf::Mouse::Left,thor::Action::PressOnce);
     (*mPlayerInput)["action2"] = thor::Action(sf::Mouse::Right,thor::Action::PressOnce);
     (*mPlayerInput)["action3"] = thor::Action(sf::Mouse::Middle,thor::Action::PressOnce);
-    //(*mPlayerInput)["special1"] = thor::Action(sf::Keyboard::Num1,thor::Action::PressOnce);
-    //(*mPlayerInput)["special2"] = thor::Action(sf::Keyboard::Num2,thor::Action::PressOnce);
-    //(*mPlayerInput)["special3"] = thor::Action(sf::Keyboard::Num3,thor::Action::PressOnce);
-    //(*mPlayerInput)["special4"] = thor::Action(sf::Keyboard::Num4,thor::Action::PressOnce);
-    //(*mPlayerInput)["special5"] = thor::Action(sf::Keyboard::Num5,thor::Action::PressOnce);
 }
 
 Configuration::~Configuration()
