@@ -32,6 +32,19 @@ sf::Int32 EntityManager::addEntity(sf::Int32 const& entityId)
     return entityId;
 }
 
+std::vector<sf::Int32> EntityManager::getEntities(ComponentFilter& filter)
+{
+    std::vector<sf::Int32> entities;
+    for (auto itr = mComponents.begin(); itr != mComponents.end(); itr++)
+    {
+        if (filter.passFilter(itr->first,this))
+        {
+            entities.push_back(itr->first);
+        }
+    }
+    return entities;
+}
+
 bool EntityManager::hasEntity(sf::Int32 const& entityId)
 {
     return mComponents.find(entityId) != mComponents.end();
@@ -72,6 +85,11 @@ bool EntityManager::hasComponent(sf::Int32 const& entityId, std::string const& c
         return mComponents.at(entityId).find(componentId) != mComponents.at(entityId).end();
     }
     return false;
+}
+
+bool EntityManager::hasComponents(sf::Int32 const& entityId, ComponentFilter& filter)
+{
+    return filter.passFilter(entityId,this);
 }
 
 void EntityManager::removeComponents(sf::Int32 const& entityId)

@@ -35,11 +35,11 @@ void System::entityUpdate(sf::Int32 const& entityId)
             foundPos = i;
         }
     }
-    if (mFilter.passFilter(entityId, mEntityManager) && !found)
+    if (mFilter.passFilter(entityId, mEntityManager.get()) && !found)
     {
         mEntities.push_back(entityId);
     }
-    else if (!mFilter.passFilter(entityId, mEntityManager) && found)
+    else if (!mFilter.passFilter(entityId, mEntityManager.get()) && found)
     {
         mEntities.erase(mEntities.begin() + foundPos);
     }

@@ -50,6 +50,7 @@ void PlayerInputSystem::update(sf::Time dt)
 
             if (mvt != sf::Vector2f())
             {
+                std::cout << "PlayerInput : " << mvt.x << " " << mvt.y << std::endl;
                 sf::Packet packet;
                 packet << 100 << 100 << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);

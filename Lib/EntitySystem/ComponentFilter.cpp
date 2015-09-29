@@ -30,7 +30,7 @@ void ComponentFilter::requiresOne(std::vector<std::string> componentIds)
     mRequiredOneComponents.push_back(componentIds);
 }
 
-bool ComponentFilter::passFilter(sf::Int32 const& entityId, EntityManager::Ptr em)
+bool ComponentFilter::passFilter(sf::Int32 const& entityId, EntityManager*em)
 {
     if (em == nullptr)
     {

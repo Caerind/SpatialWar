@@ -27,10 +27,12 @@ void World::init(bool onlineMode, bool server)
     mInstance.mSystems.addSystem<RenderSystem>();
     mInstance.mSystems.addSystem<PlayerInputSystem>();
     mInstance.mSystems.addSystem<MovementSystem>();
+    mInstance.mSystems.addSystem<PlanetAttractionSystem>();
 
     // Load Resources
     mInstance.mResources.loadTexture("ship","Assets/Textures/SpaceShipNormal.png");
     mInstance.mResources.loadTexture("spaceBackground","Assets/Textures/spaceBackground.png");
+    mInstance.mResources.loadTexture("planet","Assets/Textures/planet.png");
 
     // Load View
     mInstance.mView = ah::Application::instance().getDefaultView();
@@ -38,9 +40,15 @@ void World::init(bool onlineMode, bool server)
     // Load Game
     if (!isOnline() && !isServer())
     {
+        sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
+        mInstance.mEntities->getComponent<TransformComponent>(planetId).setOrigin(sf::Vector2f(4096.f,4096.f) * 0.5f);
+        mInstance.mEntities->getComponent<TransformComponent>(planetId).setPosition(sf::Vector2f(-3000.f,-3000.f));
+        mInstance.mEntities->getComponent<MassComponent>(planetId).setMass(60000);
+
         sf::Int32 pId = mInstance.mEntities->usePrefab("Player");
-        mInstance.mEntities->getComponent<TransformComponent>().setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
-        mInstance.mEntities->getComponent<TransformComponent>().setPosition(sf::Vector2f(400.f,300.f));
+        mInstance.mEntities->getComponent<TransformComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
+        mInstance.mEntities->getComponent<TransformComponent>(pId).setPosition(sf::Vector2f(400.f,300.f));
+        mInstance.mEntities->getComponent<MassComponent>(pId).setMass(1);
     }
 }
 
@@ -92,6 +100,7 @@ void World::update(sf::Time dt)
 
     // Update Entities
     mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
+    mInstance.mSystems.getSystem<PlanetAttractionSystem>().update(dt);
 
 
     // Background

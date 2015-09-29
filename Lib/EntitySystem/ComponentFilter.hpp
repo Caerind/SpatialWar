@@ -22,7 +22,7 @@ class ComponentFilter
         void excludes(std::string const& componentId);
         void requiresOne(std::vector<std::string> componentIds);
 
-        bool passFilter(sf::Int32 const& entityId, std::shared_ptr<EntityManager> em);
+        bool passFilter(sf::Int32 const& entityId, EntityManager* em);
 
     protected:
         std::vector<std::string> mRequiredComponents;

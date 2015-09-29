@@ -4,8 +4,9 @@
 PlanetComponent::PlanetComponent()
 : ses::Component()
 {
-    // TODO : mSprite.setTexture(World::getResources().getTexture("planet"));
+    mSprite.setTexture(World::getResources().getTexture("planet"));
     mType = PlanetComponent::Planet;
+    mRadius = 1700.f;
 }
 
 std::string PlanetComponent::getId()

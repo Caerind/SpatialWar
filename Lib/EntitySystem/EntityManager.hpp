@@ -31,6 +31,7 @@ class EntityManager
 
         sf::Int32 addEntity();
         sf::Int32 addEntity(sf::Int32 const& entityId);
+        std::vector<sf::Int32> getEntities(ComponentFilter& filter);
         bool hasEntity(sf::Int32 const& entityId);
         void removeEntity(sf::Int32 const& entityId);
         void removeEntities();
@@ -42,6 +43,7 @@ class EntityManager
         template<typename T>
         bool hasComponent(sf::Int32 const& entityId);
         bool hasComponent(sf::Int32 const& entityId, std::string const& componentId);
+        bool hasComponents(sf::Int32 const& entityId, ComponentFilter& filter);
 
         template<typename T>
         T& getComponent(sf::Int32 const& entityId);
