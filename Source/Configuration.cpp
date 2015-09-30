@@ -19,6 +19,7 @@ Configuration::Configuration()
     (*mPlayerInput)["left"] = thor::Action(sf::Keyboard::Q,thor::Action::Hold);
     (*mPlayerInput)["down"] = thor::Action(sf::Keyboard::S,thor::Action::Hold);
     (*mPlayerInput)["right"] = thor::Action(sf::Keyboard::D,thor::Action::Hold);
+    (*mPlayerInput)["stationary"] = thor::Action(sf::Keyboard::A,thor::Action::PressOnce);
     (*mPlayerInput)["speed"] = thor::Action(sf::Keyboard::LShift,thor::Action::Hold);
     (*mPlayerInput)["action1"] = thor::Action(sf::Mouse::Left,thor::Action::PressOnce);
     (*mPlayerInput)["action2"] = thor::Action(sf::Mouse::Right,thor::Action::PressOnce);

@@ -43,7 +43,16 @@ void PlanetAttractionSystem::update(sf::Time dt)
             sf::Vector2f u = lp::unitVector(diff);
             sf::Vector2f mvt = 2.f * u + u * g * m * dt.asSeconds() / (d * d);
 
-            if (std::abs(mvt.x) > 1.5f || std::abs(mvt.y) > 1.5f)
+            bool stationary = false;
+            if (mEntityManager->hasComponent<ShipComponent>(entities[j]))
+            {
+                if (mEntityManager->getComponent<ShipComponent>(entities[j]).isStationary())
+                {
+                    stationary = true;
+                }
+            }
+
+            if ((std::abs(mvt.x) > 1.5f || std::abs(mvt.y) > 1.5f) && !stationary)
             {
                 sf::Packet packet;
                 packet << 100 << 100 << entities[j] << mvt;

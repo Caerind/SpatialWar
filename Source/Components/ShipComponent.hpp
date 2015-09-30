@@ -15,10 +15,14 @@ class ShipComponent : public ses::Component, public sf::Drawable
 
         static std::string getId();
 
+        bool isStationary() const;
+        void setStationary(bool stationary);
+
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     private:
         sf::Sprite mSprite;
+        bool mStationary;
 };
 
 #endif // SHIP_HPP

@@ -8,6 +8,7 @@ PlayerInputSystem::PlayerInputSystem(ses::EntityManager::Ptr entityManager)
 {
     mFilter.requires(TransformComponent::getId());
     mFilter.requires(PlayerComponent::getId());
+    mFilter.requires(ShipComponent::getId());
 }
 
 std::string PlayerInputSystem::getId()
@@ -50,10 +51,14 @@ void PlayerInputSystem::update(sf::Time dt)
 
             if (mvt != sf::Vector2f())
             {
-                std::cout << "PlayerInput : " << mvt.x << " " << mvt.y << std::endl;
                 sf::Packet packet;
                 packet << 100 << 100 << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
+
+                if (mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary())
+                {
+                    mEntityManager->getComponent<ShipComponent>(mEntities[i]).setStationary(false);
+                }
             }
         }
 
@@ -71,7 +76,11 @@ void PlayerInputSystem::update(sf::Time dt)
             }
         }
 
-
+        // Set Stationary
+        if (isActive("stationary"))
+        {
+            mEntityManager->getComponent<ShipComponent>(mEntities[i]).setStationary(true);
+        }
 
         ah::Application::instance().setDebugInfo("Position",lp::to_string(t.getPosition().x) + " " + lp::to_string(t.getPosition().y));
     }
