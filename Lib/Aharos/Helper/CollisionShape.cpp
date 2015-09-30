@@ -35,6 +35,28 @@ unsigned int CollisionShape::getPointCount() const
     return mPoints.size();
 }
 
+void CollisionShape::setRotation(float rotation)
+{
+    mRotation = rotation;
+    rotate(rotation - mRotation);
+}
+
+float CollisionShape::getRotation() const
+{
+    return mRotation;
+}
+
+void CollisionShape::rotate(float rotation)
+{
+    mRotation += rotation;
+    sf::Transform t;
+    t.rotate(rotation);
+    for (int i = 0; i < getPointCount(); i++)
+    {
+        t.transformPoint(getPoint(i));
+    }
+}
+
 void CollisionShape::setPoint(unsigned int id, sf::Vector2f pos)
 {
     if (id >= 0 && id < getPointCount())

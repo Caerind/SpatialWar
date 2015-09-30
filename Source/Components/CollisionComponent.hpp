@@ -2,6 +2,7 @@
 #define COLLISIONCOMPONENT_HPP
 
 #include "../../Lib/EntitySystem/Component.hpp"
+#include "../../Lib/Aharos/Helper/CollisionShape.hpp"
 
 class CollisionComponent : public ses::Component
 {
@@ -9,6 +10,11 @@ class CollisionComponent : public ses::Component
         CollisionComponent();
 
         static std::string getId();
+
+        lp::CollisionShape& getShape();
+
+    private:
+        lp::CollisionShape::Ptr mShape;
 };
 
 #endif // COLLISIONCOMPONENT_HPP

@@ -9,6 +9,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 namespace lp
 {
@@ -24,6 +25,10 @@ class CollisionShape : public sf::Drawable
 
         void setPointCount(unsigned int count);
         unsigned int getPointCount() const;
+
+        void setRotation(float rotation);
+        float getRotation() const;
+        void rotate(float rotation);
 
         void setPoint(unsigned int id, sf::Vector2f pos);
         sf::Vector2f getPoint(unsigned int id) const;
@@ -43,6 +48,7 @@ class CollisionShape : public sf::Drawable
     protected:
         sf::Vector2f mPosition;
         std::vector<sf::Vector2f> mPoints;
+        float mRotation;
 
         sf::Vector2f mLastMovement;
 };
