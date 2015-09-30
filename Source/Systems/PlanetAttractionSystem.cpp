@@ -33,14 +33,13 @@ void PlanetAttractionSystem::update(sf::Time dt)
 
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
-        /*
         sf::Vector2f pPos = mEntityManager->getComponent<BaseComponent>(mEntities[i]).getPosition();
         float m = mEntityManager->getComponent<BaseComponent>(mEntities[i]).getMass();
         float g = 6.67f * 100.f;
         for (std::size_t j = 0; j < entities.size(); j++)
         {
             sf::Vector2f diff = pPos - mEntityManager->getComponent<BaseComponent>(entities[j]).getPosition();
-            float d = lp::length(diff) - mEntityManager->getComponent<PlanetComponent>(mEntities[i]).getRadius() - 300.f;
+            float d = lp::length(diff) - mEntityManager->getComponent<PlanetComponent>(mEntities[i]).getRadius();
             sf::Vector2f u = lp::unitVector(diff);
             sf::Vector2f mvt = 1.9f * u + u * g * m * dt.asSeconds() / (d * d);
 
@@ -61,6 +60,5 @@ void PlanetAttractionSystem::update(sf::Time dt)
             }
             std::cout << "Planet Attraction : " << mvt.x << " " << mvt.y << std::endl;
         }
-        */
     }
 }

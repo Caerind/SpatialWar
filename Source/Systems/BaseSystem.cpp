@@ -17,14 +17,18 @@ void BaseSystem::update()
 {
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
-
-
-
-
         // Remove Dead Entities
         if (mEntityManager->getComponent<BaseComponent>(mEntities[i]).isDead())
         {
-            mEntityManager->removeEntity(mEntities[i]);
+            if (mEntityManager->hasComponent<PlayerComponent>(mEntities[i]))
+            {
+                mEntityManager->getComponent<BaseComponent>(mEntities[i]).restoreFullLife();
+                mEntityManager->getComponent<BaseComponent>(mEntities[i]).setPosition(sf::Vector2f(2500.f,2500.f));
+            }
+            else
+            {
+                mEntityManager->removeEntity(mEntities[i]);
+            }
         }
     }
 }
@@ -78,6 +82,17 @@ void BaseSystem::handlePacket(sf::Packet& packet)
             if (mEntityManager->hasComponent<BaseComponent>(entityId))
             {
                 mEntityManager->getComponent<BaseComponent>(entityId).setLife(0.f);
+            }
+            std::cout << "22222222222222222222222222222222222222222222222" << std::endl;
+        } break;
+
+        case 204:
+        {
+            sf::Int32 entityId;
+            packet >> entityId;
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
+            {
+                mEntityManager->getComponent<BaseComponent>(entityId).restoreFullLife();
             }
         } break;
 

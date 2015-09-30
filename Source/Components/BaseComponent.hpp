@@ -13,8 +13,12 @@ class BaseComponent : public ses::Component, public lp::CollisionShape
 
         float getLife() const;
         void setLife(float life);
-        void inflige(float damage);
-        void restore(float restore);
+        float getLifeMax() const;
+        void setLifeMax(float lifeMax);
+        bool inflige(float damage);
+        bool restore(float restore);
+        void restoreFullLife();
+        bool isFullLife() const;
         bool isDead() const;
 
         float getMass() const;
@@ -22,6 +26,7 @@ class BaseComponent : public ses::Component, public lp::CollisionShape
 
     private:
         float mLife;
+        float mLifeMax;
         float mMass;
 };
 

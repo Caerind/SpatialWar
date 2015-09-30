@@ -101,6 +101,7 @@ void EntityManager::handlePacket(sf::Packet& packet)
         case 201: mSystems->handlePacket(BaseSystem::getId(),packet); break;
         case 202: mSystems->handlePacket(BaseSystem::getId(),packet); break;
         case 203: mSystems->handlePacket(BaseSystem::getId(),packet); break;
+        case 204: mSystems->handlePacket(BaseSystem::getId(),packet); break;
 
         default: break;
     }

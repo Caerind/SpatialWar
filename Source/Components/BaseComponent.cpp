@@ -22,14 +22,36 @@ void BaseComponent::setLife(float life)
     mLife = life;
 }
 
-void BaseComponent::inflige(float damage)
+float BaseComponent::getLifeMax() const
 {
-    mLife -= damage;
+    return mLifeMax;
 }
 
-void BaseComponent::restore(float restore)
+void BaseComponent::setLifeMax(float lifeMax)
 {
-    mLife += restore;
+    mLifeMax = lifeMax;
+}
+
+bool BaseComponent::inflige(float damage)
+{
+    mLife = std::max(mLife-damage,0.f);
+    return isDead();
+}
+
+bool BaseComponent::restore(float restore)
+{
+    mLife = std::min(mLife+restore,mLifeMax);
+    return isFullLife();
+}
+
+void BaseComponent::restoreFullLife()
+{
+    mLife = mLifeMax;
+}
+
+bool BaseComponent::isFullLife() const
+{
+    return mLife == mLifeMax;
 }
 
 bool BaseComponent::isDead() const

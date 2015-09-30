@@ -103,7 +103,6 @@ void MovementSystem::collision(sf::Int32 const& entityId)
 
 void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& entity2)
 {
-    std::cout << "Collision" << std::endl;
     if (mEntityManager->hasComponent<PlanetComponent>(entity1))
     {
         if (mEntityManager->hasComponent<ShipComponent>(entity2))

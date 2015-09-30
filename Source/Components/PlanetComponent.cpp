@@ -4,8 +4,9 @@
 PlanetComponent::PlanetComponent()
 : ses::Component()
 {
-    mShape.setRadius(2048.f);
-    mShape.setTexture(&World::getResources().getTexture("planet"));
+    sf::Texture* texture = &World::getResources().getTexture("planet");
+    mShape.setRadius(texture->getSize().x * 0.5f);
+    mShape.setTexture(texture);
     mType = PlanetComponent::Planet;
 }
 

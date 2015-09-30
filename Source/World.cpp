@@ -32,7 +32,8 @@ void World::init(bool onlineMode, bool server)
     {
         sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
         mInstance.mEntities->getComponent<BaseComponent>(planetId).loadFromCircle(mInstance.mEntities->getComponent<PlanetComponent>(planetId).getShape());
-        mInstance.mEntities->getComponent<BaseComponent>(planetId).setOrigin(sf::Vector2f(4096.f,4096.f) * 0.5f);
+        float r = mInstance.mEntities->getComponent<PlanetComponent>(planetId).getRadius();
+        mInstance.mEntities->getComponent<BaseComponent>(planetId).setOrigin(r,r);
         mInstance.mEntities->getComponent<BaseComponent>(planetId).setMass(60000);
         mInstance.mEntities->getComponent<BaseComponent>(planetId).setLife(1000000.f);
 
