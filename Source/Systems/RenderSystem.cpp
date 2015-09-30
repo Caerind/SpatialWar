@@ -1,10 +1,11 @@
 #include "RenderSystem.hpp"
 #include "../../Lib/EntitySystem/EntityManager.hpp"
+#include "../../Lib/Aharos/Application/Application.hpp"
 
 RenderSystem::RenderSystem(ses::EntityManager::Ptr entityManager)
 : ses::System(entityManager)
 {
-    mFilter.requires(TransformComponent::getId());
+    mFilter.requires(BaseComponent::getId());
     std::vector<std::string> renderableComponents;
     renderableComponents.push_back(ShipComponent::getId());
     renderableComponents.push_back(PlanetComponent::getId());
@@ -28,7 +29,7 @@ void RenderSystem::render(sf::RenderTarget& target, sf::RenderStates states)
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
         sf::RenderStates entStates = states;
-        entStates.transform *= mEntityManager->getComponent<TransformComponent>(mEntities[i]).getTransform();
+        entStates.transform *= mEntityManager->getComponent<BaseComponent>(mEntities[i]).getTransform();
 
         if (mEntityManager->hasComponent<ShipComponent>(mEntities[i]))
         {
@@ -53,6 +54,12 @@ void RenderSystem::render(sf::RenderTarget& target, sf::RenderStates states)
         else if (mEntityManager->hasComponent<ResourceComponent>(mEntities[i]))
         {
             target.draw(mEntityManager->getComponent<ResourceComponent>(mEntities[i]),entStates);
+        }
+
+        if (mEntityManager->hasComponent<BaseComponent>(mEntities[i]) && ah::Application::instance().isDebugScreenVisible())
+        {
+            // Render Collision Shape
+            target.draw(mEntityManager->getComponent<BaseComponent>(mEntities[i]));
         }
     }
 }

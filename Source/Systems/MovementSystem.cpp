@@ -5,7 +5,7 @@
 MovementSystem::MovementSystem(ses::EntityManager::Ptr entityManager)
 : ses::System(entityManager)
 {
-    mFilter.requires(TransformComponent::getId());
+    mFilter.requires(BaseComponent::getId());
     std::vector<std::string> movableEntities;
     movableEntities.push_back(CometComponent::getId());
     movableEntities.push_back(BulletComponent::getId());
@@ -80,6 +80,61 @@ void MovementSystem::update(sf::Time dt)
     }
 }
 
+void MovementSystem::collision(sf::Int32 const& entityId)
+{
+    BaseComponent& c = mEntityManager->getComponent<BaseComponent>(entityId);
+
+    ses::ComponentFilter filter;
+    filter.requires(BaseComponent::getId());
+    std::vector<sf::Int32> entities = mEntityManager->getEntities(filter);
+
+    for (std::size_t i = 0; i < entities.size(); i++)
+    {
+        if (entities[i] != entityId)
+        {
+            BaseComponent& c2 = mEntityManager->getComponent<BaseComponent>(entities[i]);
+            if (c2.intersects(c))
+            {
+                handleCollision(entityId,entities[i]);
+            }
+        }
+    }
+}
+
+void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& entity2)
+{
+    std::cout << "Collision" << std::endl;
+    if (mEntityManager->hasComponent<PlanetComponent>(entity1))
+    {
+        if (mEntityManager->hasComponent<ShipComponent>(entity2))
+        {
+            // Remove entity2
+            sf::Packet packet;
+            packet << 203 << 203 << entity2;
+            mEntityManager->sendPacket(packet);
+        }
+        if (mEntityManager->hasComponent<PlanetComponent>(entity2))
+        {
+            // Strange ?
+        }
+    }
+    else if (mEntityManager->hasComponent<ShipComponent>(entity1))
+    {
+        if (mEntityManager->hasComponent<PlanetComponent>(entity2))
+        {
+            // Remove entity1
+            sf::Packet packet;
+            packet << 203 << 203 << entity1;
+            mEntityManager->sendPacket(packet);
+        }
+        if (mEntityManager->hasComponent<ShipComponent>(entity2))
+        {
+            // Apply Damage to both
+        }
+    }
+
+}
+
 void MovementSystem::handlePacket(sf::Packet& packet)
 {
     if (mEntityManager == nullptr)
@@ -94,11 +149,16 @@ void MovementSystem::handlePacket(sf::Packet& packet)
             sf::Int32 entityId;
             sf::Vector2f mvt;
             packet >> entityId >> mvt;
-            // Move entity
-            if (mEntityManager->hasComponent<TransformComponent>(entityId))
+
+            // Move the entity
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
             {
-                mEntityManager->getComponent<TransformComponent>(entityId).move(mvt);
+                mEntityManager->getComponent<BaseComponent>(entityId).move(mvt);
+
+                // Collision
+                collision(entityId);
             }
+
             // If the entity is the player, move his view
             if (mEntityManager->hasComponent<PlayerComponent>(entityId))
             {
@@ -111,9 +171,9 @@ void MovementSystem::handlePacket(sf::Packet& packet)
             sf::Int32 entityId;
             float rotation;
             packet >> entityId >> rotation;
-            if (mEntityManager->hasComponent<TransformComponent>(entityId))
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
             {
-                mEntityManager->getComponent<TransformComponent>(entityId).setRotation(rotation);
+                mEntityManager->getComponent<BaseComponent>(entityId).setRotation(rotation);
             }
         } break;
 

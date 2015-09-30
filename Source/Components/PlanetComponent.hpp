@@ -6,7 +6,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
 class PlanetComponent : public ses::Component, public sf::Drawable
 {
@@ -30,8 +30,10 @@ class PlanetComponent : public ses::Component, public sf::Drawable
 
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+        sf::CircleShape& getShape();
+
     private:
-        sf::Sprite mSprite;
+        sf::CircleShape mShape;
         float mRadius;
         Type mType;
 };

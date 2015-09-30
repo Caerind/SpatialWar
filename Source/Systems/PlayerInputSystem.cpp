@@ -6,7 +6,7 @@ PlayerInputSystem::PlayerInputSystem(ses::EntityManager::Ptr entityManager)
 : ses::System(entityManager)
 , ah::ActionTarget(Configuration::getPlayerInput())
 {
-    mFilter.requires(TransformComponent::getId());
+    mFilter.requires(BaseComponent::getId());
     mFilter.requires(PlayerComponent::getId());
     mFilter.requires(ShipComponent::getId());
 }
@@ -25,7 +25,7 @@ void PlayerInputSystem::update(sf::Time dt)
 
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
-        TransformComponent& t = mEntityManager->getComponent<TransformComponent>(mEntities[i]);
+        BaseComponent& t = mEntityManager->getComponent<BaseComponent>(mEntities[i]);
 
         // Movement
         {

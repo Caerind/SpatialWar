@@ -5,5 +5,6 @@
 #include "Systems/PlayerInputSystem.hpp"
 #include "Systems/MovementSystem.hpp"
 #include "Systems/PlanetAttractionSystem.hpp"
+#include "Systems/BaseSystem.hpp"
 
 #endif // SYSTEMS_HPP_INCLUDED

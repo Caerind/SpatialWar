@@ -1,9 +1,6 @@
 #include "../Lib/Aharos/Application/Application.hpp"
 
 #include "States/GameState.hpp"
-#include "States/OnlineGameState.hpp"
-
-#include "Configuration.hpp"
 
 int main()
 {
@@ -26,7 +23,6 @@ int main()
 
     // Register States
     ah::Application::instance().registerState<GameState>(GameState::getID());
-    ah::Application::instance().registerState<OnlineGameState>(OnlineGameState::getID());
 
     // Run
     ah::Application::instance().pushState(GameState::getID());

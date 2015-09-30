@@ -4,9 +4,9 @@
 PlanetComponent::PlanetComponent()
 : ses::Component()
 {
-    mSprite.setTexture(World::getResources().getTexture("planet"));
+    mShape.setRadius(2048.f);
+    mShape.setTexture(&World::getResources().getTexture("planet"));
     mType = PlanetComponent::Planet;
-    mRadius = 1700.f;
 }
 
 std::string PlanetComponent::getId()
@@ -26,15 +26,20 @@ void PlanetComponent::setType(Type type)
 
 float PlanetComponent::getRadius() const
 {
-    return mRadius;
+    return mShape.getRadius();
 }
 
 void PlanetComponent::setRadius(float radius)
 {
-    mRadius = radius;
+    mShape.setRadius(radius);
 }
 
 void PlanetComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mSprite,states);
+    target.draw(mShape,states);
+}
+
+sf::CircleShape& PlanetComponent::getShape()
+{
+    return mShape;
 }

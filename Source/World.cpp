@@ -9,18 +9,7 @@ void World::init(bool onlineMode, bool server)
     mInstance.mServer = server;
 
     // Load EntityManager
-    if (isOnline() && !isServer())
-    {
-        mInstance.mEntities = std::shared_ptr<ses::EntityManager>(new ClientEntityManager(Configuration::getSocket()));
-    }
-    else if (!isOnline() && !isServer())
-    {
-        mInstance.mEntities = std::shared_ptr<ses::EntityManager>(new EntityManager());
-    }
-    else
-    {
-        mInstance.mEntities = nullptr;
-    }
+    mInstance.mEntities = std::shared_ptr<ses::EntityManager>(new EntityManager());
 
     // Load SystemManager
     mInstance.mSystems.setManager(mInstance.mEntities);
@@ -28,6 +17,7 @@ void World::init(bool onlineMode, bool server)
     mInstance.mSystems.addSystem<PlayerInputSystem>();
     mInstance.mSystems.addSystem<MovementSystem>();
     mInstance.mSystems.addSystem<PlanetAttractionSystem>();
+    mInstance.mSystems.addSystem<BaseSystem>();
 
     // Load Resources
     mInstance.mResources.loadTexture("ship","Assets/Textures/SpaceShipNormal.png");
@@ -41,14 +31,23 @@ void World::init(bool onlineMode, bool server)
     if (!isOnline() && !isServer())
     {
         sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
-        mInstance.mEntities->getComponent<TransformComponent>(planetId).setOrigin(sf::Vector2f(4096.f,4096.f) * 0.5f);
-        mInstance.mEntities->getComponent<TransformComponent>(planetId).setPosition(sf::Vector2f(-3000.f,-3000.f));
-        mInstance.mEntities->getComponent<MassComponent>(planetId).setMass(60000);
+        mInstance.mEntities->getComponent<BaseComponent>(planetId).loadFromCircle(mInstance.mEntities->getComponent<PlanetComponent>(planetId).getShape());
+        mInstance.mEntities->getComponent<BaseComponent>(planetId).setOrigin(sf::Vector2f(4096.f,4096.f) * 0.5f);
+        mInstance.mEntities->getComponent<BaseComponent>(planetId).setMass(60000);
+        mInstance.mEntities->getComponent<BaseComponent>(planetId).setLife(1000000.f);
 
         sf::Int32 pId = mInstance.mEntities->usePrefab("Player");
-        mInstance.mEntities->getComponent<TransformComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
-        mInstance.mEntities->getComponent<TransformComponent>(pId).setPosition(sf::Vector2f(400.f,300.f));
-        mInstance.mEntities->getComponent<MassComponent>(pId).setMass(1);
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setPosition(sf::Vector2f(2500.f,2500.f));
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setMass(1);
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setPointCount(4);
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(0,sf::Vector2f(0,0));
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(1,sf::Vector2f(200.f,0));
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(2,sf::Vector2f(200.f,136.f));
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(3,sf::Vector2f(0,136.f));
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setLife(100.f);
+
+        mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(pId).getPosition());
     }
 }
 
@@ -99,6 +98,7 @@ void World::update(sf::Time dt)
     mInstance.mEntities->handlePackets();
 
     // Update Entities
+    mInstance.mSystems.getSystem<BaseSystem>().update();
     mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
     mInstance.mSystems.getSystem<PlanetAttractionSystem>().update(dt);
 

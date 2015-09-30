@@ -8,7 +8,6 @@
 #include <SFML/Graphics/View.hpp>
 
 #include "EntityManager.hpp"
-#include "Client/ClientEntityManager.hpp"
 #include "../Lib/EntitySystem/SystemManager.hpp"
 
 #include "Configuration.hpp"
