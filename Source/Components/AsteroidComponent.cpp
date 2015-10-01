@@ -4,7 +4,7 @@
 AsteroidComponent::AsteroidComponent()
 : ses::Component()
 {
-    // TODO : mSprite.setTexture(World::getResources().getTexture("asteroid"));
+    //mSprite.setTexture(World::getResources().getTexture("asteroids"));
 }
 
 std::string AsteroidComponent::getId()

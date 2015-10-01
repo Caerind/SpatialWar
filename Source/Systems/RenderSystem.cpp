@@ -66,7 +66,7 @@ void RenderSystem::render(sf::RenderTarget& target, sf::RenderStates states)
 
 void RenderSystem::handlePacket(sf::Packet& packet)
 {
-    int eventId;
+    sf::Int32 eventId;
     packet >> eventId;
     switch (eventId)
     {

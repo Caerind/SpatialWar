@@ -52,7 +52,8 @@ void PlayerInputSystem::update(sf::Time dt)
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
-                packet << 100 << 100 << mEntities[i] << mvt;
+                sf::Int32 msgId = 100;
+                packet << msgId << msgId << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
 
                 if (mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary())
@@ -90,7 +91,7 @@ void PlayerInputSystem::update(sf::Time dt)
 
 void PlayerInputSystem::handlePacket(sf::Packet& packet)
 {
-    int eventId;
+    sf::Int32 eventId;
     packet >> eventId;
     switch (eventId)
     {

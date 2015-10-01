@@ -17,6 +17,8 @@ void BaseSystem::update()
 {
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
+
+
         // Remove Dead Entities
         if (mEntityManager->getComponent<BaseComponent>(mEntities[i]).isDead())
         {
@@ -24,10 +26,12 @@ void BaseSystem::update()
             {
                 mEntityManager->getComponent<BaseComponent>(mEntities[i]).restoreFullLife();
                 mEntityManager->getComponent<BaseComponent>(mEntities[i]).setPosition(sf::Vector2f(2500.f,2500.f));
+                std::cout << "ok" << std::endl;
             }
             else
             {
                 mEntityManager->removeEntity(mEntities[i]);
+                std::cout << "ok" << std::endl;
             }
         }
     }
@@ -38,7 +42,7 @@ void BaseSystem::handlePacket(sf::Packet& packet)
     if (mEntityManager == nullptr)
         return;
 
-    int eventId;
+    sf::Int32 eventId;
     packet >> eventId;
     switch (eventId)
     {
@@ -83,7 +87,6 @@ void BaseSystem::handlePacket(sf::Packet& packet)
             {
                 mEntityManager->getComponent<BaseComponent>(entityId).setLife(0.f);
             }
-            std::cout << "22222222222222222222222222222222222222222222222" << std::endl;
         } break;
 
         case 204:

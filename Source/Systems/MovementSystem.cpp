@@ -32,7 +32,8 @@ void MovementSystem::update(sf::Time dt)
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
-                packet << 100 << 100 << mEntities[i] << mvt;
+                sf::Int32 msgId = 100;
+                packet << msgId << msgId << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
             }
         }
@@ -45,7 +46,8 @@ void MovementSystem::update(sf::Time dt)
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
-                packet << 100 << 100 << mEntities[i] << mvt;
+                sf::Int32 msgId = 100;
+                packet << msgId << msgId << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
             }
         }
@@ -59,7 +61,8 @@ void MovementSystem::update(sf::Time dt)
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
-                packet << 100 << 100 << mEntities[i] << mvt;
+                sf::Int32 msgId = 100;
+                packet << msgId << msgId << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
             }
         }
@@ -73,7 +76,8 @@ void MovementSystem::update(sf::Time dt)
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
-                packet << 100 << 100 << mEntities[i] << mvt;
+                sf::Int32 msgId = 100;
+                packet << msgId << msgId << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
             }
         }
@@ -109,12 +113,21 @@ void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& 
         {
             // Remove entity2
             sf::Packet packet;
-            packet << 203 << 203 << entity2;
+            sf::Int32 msgId = 203;
+            packet << msgId << msgId << entity2;
             mEntityManager->sendPacket(packet);
         }
-        if (mEntityManager->hasComponent<PlanetComponent>(entity2))
+        else if (mEntityManager->hasComponent<PlanetComponent>(entity2))
         {
             // Strange ?
+        }
+        else if (mEntityManager->hasComponent<CometComponent>(entity2))
+        {
+            // Remove entity2
+            sf::Packet packet;
+            sf::Int32 msgId = 203;
+            packet << msgId << msgId << entity2;
+            mEntityManager->sendPacket(packet);
         }
     }
     else if (mEntityManager->hasComponent<ShipComponent>(entity1))
@@ -123,10 +136,34 @@ void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& 
         {
             // Remove entity1
             sf::Packet packet;
-            packet << 203 << 203 << entity1;
+            sf::Int32 msgId = 203;
+            packet << msgId << msgId << entity1;
             mEntityManager->sendPacket(packet);
         }
-        if (mEntityManager->hasComponent<ShipComponent>(entity2))
+        else if (mEntityManager->hasComponent<ShipComponent>(entity2))
+        {
+            // Apply Damage to both
+        }
+        else if (mEntityManager->hasComponent<CometComponent>(entity2))
+        {
+            // Apply Damage to both
+        }
+    }
+    else if (mEntityManager->hasComponent<CometComponent>(entity1))
+    {
+        if (mEntityManager->hasComponent<PlanetComponent>(entity2))
+        {
+            // Remove entity1
+            sf::Packet packet;
+            sf::Int32 msgId = 203;
+            packet << msgId << msgId << entity1;
+            mEntityManager->sendPacket(packet);
+        }
+        else if (mEntityManager->hasComponent<ShipComponent>(entity2))
+        {
+            // Apply Damage to both
+        }
+        else if (mEntityManager->hasComponent<CometComponent>(entity2))
         {
             // Apply Damage to both
         }
@@ -139,7 +176,7 @@ void MovementSystem::handlePacket(sf::Packet& packet)
     if (mEntityManager == nullptr)
         return;
 
-    int eventId;
+    sf::Int32 eventId;
     packet >> eventId;
     switch (eventId)
     {

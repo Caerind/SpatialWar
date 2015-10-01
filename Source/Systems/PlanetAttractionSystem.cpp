@@ -2,6 +2,7 @@
 #include "../../Lib/EntitySystem/EntityManager.hpp"
 #include "../World.hpp"
 #include "../../Lib/Aharos/Helper/Math.hpp"
+#include <cmath>
 
 PlanetAttractionSystem::PlanetAttractionSystem(ses::EntityManager::Ptr entityManager)
 : ses::System(entityManager)
@@ -35,13 +36,13 @@ void PlanetAttractionSystem::update(sf::Time dt)
     {
         sf::Vector2f pPos = mEntityManager->getComponent<BaseComponent>(mEntities[i]).getPosition();
         float m = mEntityManager->getComponent<BaseComponent>(mEntities[i]).getMass();
-        float g = 6.67f * 100.f;
+        float g = 2.f * pow(10,-11); // g is modified to fit in the game
         for (std::size_t j = 0; j < entities.size(); j++)
         {
             sf::Vector2f diff = pPos - mEntityManager->getComponent<BaseComponent>(entities[j]).getPosition();
-            float d = lp::length(diff) - mEntityManager->getComponent<PlanetComponent>(mEntities[i]).getRadius();
+            float d = lp::length(diff) * 100.f; // as constant
             sf::Vector2f u = lp::unitVector(diff);
-            sf::Vector2f mvt = 1.9f * u + u * g * m * dt.asSeconds() / (d * d);
+            sf::Vector2f mvt = u * g * m * dt.asSeconds() / (d * d);
 
             bool stationary = false;
             if (mEntityManager->hasComponent<ShipComponent>(entities[j]))
@@ -52,10 +53,11 @@ void PlanetAttractionSystem::update(sf::Time dt)
                 }
             }
 
-            if ((std::abs(mvt.x) > 1.5f || std::abs(mvt.y) > 1.5f) && !stationary)
+            if ((std::abs(mvt.x) > 1.f || std::abs(mvt.y) > 1.f) && !stationary)
             {
                 sf::Packet packet;
-                packet << 100 << 100 << entities[j] << mvt;
+                sf::Int32 msgId = 100;
+                packet << msgId << msgId << entities[j] << mvt;
                 mEntityManager->sendPacket(packet);
             }
             std::cout << "Planet Attraction : " << mvt.x << " " << mvt.y << std::endl;

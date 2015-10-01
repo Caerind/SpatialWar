@@ -4,7 +4,7 @@
 CometComponent::CometComponent()
 : ses::Component()
 {
-    // TODO : mSprite.setTexture(World::getResources().getTexture("comet"));
+    mSprite.setTexture(World::getResources().getTexture("comet"));
 }
 
 std::string CometComponent::getId()

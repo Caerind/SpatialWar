@@ -88,20 +88,20 @@ EntityManager::EntityManager()
 
 void EntityManager::handlePacket(sf::Packet& packet)
 {
-    int eventId;
+    sf::Int32 eventId;
     packet >> eventId;
     switch (eventId)
     {
         // MovementSystem
-        case 100: mSystems->handlePacket(MovementSystem::getId(),packet); break;
-        case 105: mSystems->handlePacket(MovementSystem::getId(),packet); break;
+        case 100: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Move
+        case 105: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Rotate
 
         // BaseSystem
-        case 200: mSystems->handlePacket(BaseSystem::getId(),packet); break;
-        case 201: mSystems->handlePacket(BaseSystem::getId(),packet); break;
-        case 202: mSystems->handlePacket(BaseSystem::getId(),packet); break;
-        case 203: mSystems->handlePacket(BaseSystem::getId(),packet); break;
-        case 204: mSystems->handlePacket(BaseSystem::getId(),packet); break;
+        case 200: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Set Life
+        case 201: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Inflige
+        case 202: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Restore
+        case 203: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Kill
+        case 204: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Full Restore
 
         default: break;
     }

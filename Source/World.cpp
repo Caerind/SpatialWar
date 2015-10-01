@@ -23,9 +23,12 @@ void World::init(bool onlineMode, bool server)
     mInstance.mResources.loadTexture("ship","Assets/Textures/SpaceShipNormal.png");
     mInstance.mResources.loadTexture("spaceBackground","Assets/Textures/spaceBackground.png");
     mInstance.mResources.loadTexture("planet","Assets/Textures/planet.png");
+    mInstance.mResources.loadTexture("comet","Assets/Textures/comet.png");
+    mInstance.mResources.loadTexture("asteroids","Assets/Textures/asteroids.png");
 
     // Load View
     mInstance.mView = ah::Application::instance().getDefaultView();
+    mInstance.mView.zoom(8.f);
 
     // Load Game
     if (!isOnline() && !isServer())
@@ -34,13 +37,26 @@ void World::init(bool onlineMode, bool server)
         mInstance.mEntities->getComponent<BaseComponent>(planetId).loadFromCircle(mInstance.mEntities->getComponent<PlanetComponent>(planetId).getShape());
         float r = mInstance.mEntities->getComponent<PlanetComponent>(planetId).getRadius();
         mInstance.mEntities->getComponent<BaseComponent>(planetId).setOrigin(r,r);
-        mInstance.mEntities->getComponent<BaseComponent>(planetId).setMass(60000);
+        mInstance.mEntities->getComponent<BaseComponent>(planetId).setMass(pow(10,24)); // ~6 time smaller than the Earth
         mInstance.mEntities->getComponent<BaseComponent>(planetId).setLife(1000000.f);
+
+        sf::Int32 cometId = mInstance.mEntities->usePrefab("Comet");
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setOrigin(sf::Vector2f(313.f,489.f) * 0.5f);
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPosition(sf::Vector2f(2500.f,-2500.f));
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setMass(100);
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPointCount(4);
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(0,sf::Vector2f(0,0));
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(1,sf::Vector2f(313.f,0));
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(2,sf::Vector2f(313.f,489.f));
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(3,sf::Vector2f(0,489.f));
+        mInstance.mEntities->getComponent<BaseComponent>(cometId).setLife(1000.f);
+        mInstance.mEntities->getComponent<CometComponent>(cometId).setSpeed(400.f);
+        mInstance.mEntities->getComponent<CometComponent>(cometId).setDirection(sf::Vector2f(-0.5f,1.f));
 
         sf::Int32 pId = mInstance.mEntities->usePrefab("Player");
         mInstance.mEntities->getComponent<BaseComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPosition(sf::Vector2f(2500.f,2500.f));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setMass(1);
+        mInstance.mEntities->getComponent<BaseComponent>(pId).setMass(100);
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPointCount(4);
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(0,sf::Vector2f(0,0));
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(1,sf::Vector2f(200.f,0));
@@ -82,7 +98,7 @@ void World::handleEvent(sf::Event const& event)
                 mInstance.mView.zoom(1.2f);
             }
         }
-        else if (event.mouseWheelScroll.delta)
+        else
         {
             if (mInstance.mView.getSize().x > 500.f)
             {
