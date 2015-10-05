@@ -16,7 +16,6 @@ void World::init(bool onlineMode, bool server)
     mInstance.mSystems.addSystem<RenderSystem>();
     mInstance.mSystems.addSystem<PlayerInputSystem>();
     mInstance.mSystems.addSystem<MovementSystem>();
-    mInstance.mSystems.addSystem<PlanetAttractionSystem>();
     mInstance.mSystems.addSystem<BaseSystem>();
 
     // Load Resources
@@ -40,6 +39,7 @@ void World::init(bool onlineMode, bool server)
         mInstance.mEntities->getComponent<BaseComponent>(planetId).setMass(pow(10,24)); // ~6 time smaller than the Earth
         mInstance.mEntities->getComponent<BaseComponent>(planetId).setLife(1000000.f);
 
+        /*
         sf::Int32 cometId = mInstance.mEntities->usePrefab("Comet");
         mInstance.mEntities->getComponent<BaseComponent>(cometId).setOrigin(sf::Vector2f(313.f,489.f) * 0.5f);
         mInstance.mEntities->getComponent<BaseComponent>(cometId).setPosition(sf::Vector2f(2500.f,-2500.f));
@@ -52,6 +52,7 @@ void World::init(bool onlineMode, bool server)
         mInstance.mEntities->getComponent<BaseComponent>(cometId).setLife(1000.f);
         mInstance.mEntities->getComponent<CometComponent>(cometId).setSpeed(400.f);
         mInstance.mEntities->getComponent<CometComponent>(cometId).setDirection(sf::Vector2f(-0.5f,1.f));
+        */
 
         sf::Int32 pId = mInstance.mEntities->usePrefab("Player");
         mInstance.mEntities->getComponent<BaseComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
@@ -112,14 +113,17 @@ void World::update(sf::Time dt)
     // Handle Packets
     mInstance.mEntities->handlePackets();
 
-    // Update Entities
-    mInstance.mSystems.getSystem<BaseSystem>().update();
-    mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
-    mInstance.mSystems.getSystem<PlanetAttractionSystem>().update(dt);
+    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+    {
+        // Update Entities
+        mInstance.mSystems.getSystem<BaseSystem>().update();
+        mInstance.mSystems.getSystem<MovementSystem>().update(dt);
+        mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
 
 
-    // Background
-    mInstance.mSpace.update(mInstance.mView);
+        // Background
+        mInstance.mSpace.update(mInstance.mView);
+    }
 }
 
 void World::render(sf::RenderTarget& target, sf::RenderStates states)

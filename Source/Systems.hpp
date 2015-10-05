@@ -4,7 +4,6 @@
 #include "Systems/RenderSystem.hpp"
 #include "Systems/PlayerInputSystem.hpp"
 #include "Systems/MovementSystem.hpp"
-#include "Systems/PlanetAttractionSystem.hpp"
 #include "Systems/BaseSystem.hpp"
 #include "Systems/ShipPartSystem.hpp"
 

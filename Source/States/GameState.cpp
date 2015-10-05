@@ -3,7 +3,6 @@
 GameState::GameState(ah::StateManager& manager) : ah::State(manager)
 {
     mType = GameState::getID();
-    World::init(false,false);
 }
 
 GameState::~GameState()

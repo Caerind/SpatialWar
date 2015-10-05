@@ -1,6 +1,6 @@
 #include "../Lib/Aharos/Application/Application.hpp"
 
-#include "States/GameState.hpp"
+#include "States.hpp"
 
 int main()
 {
@@ -22,10 +22,11 @@ int main()
     ah::Application::instance().loadFont("future_thin","Assets/Fonts/future_thin.ttf");
 
     // Register States
-    ah::Application::instance().registerState<GameState>(GameState::getID());
+    ah::Application::instance().registerState<GameState>();
+    ah::Application::instance().registerState<LoadingState>();
 
     // Run
-    ah::Application::instance().pushState(GameState::getID());
+    ah::Application::instance().pushState(LoadingState::getID());
     ah::Application::instance().runMaxFps();
 
     return EXIT_SUCCESS;
