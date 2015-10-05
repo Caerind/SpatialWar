@@ -26,7 +26,7 @@ int main()
 
     // Run
     ah::Application::instance().pushState(GameState::getID());
-    ah::Application::instance().run();
+    ah::Application::instance().runMaxFps();
 
     return EXIT_SUCCESS;
 }

@@ -24,7 +24,8 @@ class Application : public Log, public ResourceHolder, public Window, public Deb
     public:
         static Application& instance();
 
-        void run();
+        void run60Fps();
+        void runMaxFps();
 
         template <typename T>
         void registerState(std::string const& stateId);

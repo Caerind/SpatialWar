@@ -10,7 +10,7 @@ Application& Application::instance()
     return mInstance;
 }
 
-void Application::run()
+void Application::run60Fps()
 {
     sf::Clock clock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -38,6 +38,17 @@ void Application::run()
 
         if (repaint)
             render();
+	}
+}
+
+void Application::runMaxFps()
+{
+    sf::Clock clock;
+	while (isOpen())
+	{
+        handleEvents();
+        update(clock.restart());
+        render();
 	}
 }
 
