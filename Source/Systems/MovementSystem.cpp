@@ -32,23 +32,21 @@ void MovementSystem::update(sf::Time dt)
         if (mEntityManager->hasComponent<CometComponent>(mEntities[i])
         || mEntityManager->hasComponent<BulletComponent>(mEntities[i]))
         {
-            sf::Vector2f mvt = b.getDirection() * b.getSpeed() * dt.asSeconds();
-            sendMovement(mEntities[i],mvt);
+            sendMovement(mEntities[i], b.getDirection() * b.getSpeed() * dt.asSeconds());
         }
 
         // MRU with speed reduction
         if (mEntityManager->hasComponent<AsteroidComponent>(mEntities[i])
         || mEntityManager->hasComponent<ResourceComponent>(mEntities[i]))
         {
-            if (b.getSpeed() > 0.f)
+            /*if (b.getSpeed() > 0.f)
             {
                 sf::Packet packet;
                 sf::Int32 msgId = 212;
                 packet << msgId << msgId << mEntities[i] << -25.f * dt.asSeconds();
                 mEntityManager->sendPacket(packet);
-            }
-            sf::Vector2f mvt = b.getDirection() * b.getSpeed() * dt.asSeconds();
-            sendMovement(mEntities[i],mvt);
+            }*/
+            sendMovement(mEntities[i], b.getDirection() * b.getSpeed() * dt.asSeconds());
         }
 
         if (!mEntityManager->hasComponent<PlanetComponent>(mEntities[i]))
@@ -97,18 +95,42 @@ void MovementSystem::update(sf::Time dt)
     }
 }
 
-void MovementSystem::sendMovement(sf::Int32 const& entityId, sf::Vector2f const& mvt)
+void MovementSystem::sendMovement(sf::Int32 const& entityId, sf::Vector2f const& movement)
 {
-    if (mvt != sf::Vector2f(0.f,0.f))
+    if (movement != sf::Vector2f(0.f,0.f))
     {
-        if (lp::length(mvt) >= 0.01f)
+        if (lp::length(movement) >= 0.01f)
         {
             sf::Packet packet;
             sf::Int32 msgId = 100;
-            packet << msgId << msgId << entityId << mvt;
-            mEntityManager->sendPacket(packet);
+            packet << msgId << msgId << entityId << movement;
+            World::getEntities().sendPacket(packet);
         }
     }
+}
+
+void MovementSystem::sendPosition(sf::Int32 const& entityId, sf::Vector2f const& position)
+{
+    sf::Packet packet;
+    sf::Int32 msgId = 101;
+    packet << msgId << msgId << entityId << position;
+    World::getEntities().sendPacket(packet);
+}
+
+void MovementSystem::sendRotation(sf::Int32 const& entityId, float angle)
+{
+    sf::Packet packet;
+    sf::Int32 msgId = 102;
+    packet << msgId << msgId << entityId << angle;
+    World::getEntities().sendPacket(packet);
+}
+
+void MovementSystem::sendStationary(sf::Int32 const& entityId, bool stationary)
+{
+    sf::Packet packet;
+    sf::Int32 msgId = 103;
+    packet << msgId << msgId << entityId << stationary;
+    World::getEntities().sendPacket(packet);
 }
 
 void MovementSystem::collision(sf::Int32 const& entityId)
@@ -177,40 +199,55 @@ void MovementSystem::handlePacket(sf::Packet& packet)
     packet >> eventId;
     switch (eventId)
     {
-        case 100:
+        case 100: // Movement
         {
             sf::Int32 entityId;
             sf::Vector2f mvt;
             packet >> entityId >> mvt;
 
-            // Move the entity
             if (mEntityManager->hasComponent<BaseComponent>(entityId))
             {
                 mEntityManager->getComponent<BaseComponent>(entityId).move(mvt);
 
-                // Collision
                 collision(entityId);
             }
 
-            // If the entity is the player, move his view
             if (mEntityManager->hasComponent<PlayerComponent>(entityId))
             {
                 mEntityManager->getComponent<PlayerComponent>(entityId).getView().move(mvt);
             }
         } break;
 
-        case 105:
+        case 101: // Position
+        {
+            sf::Int32 entityId;
+            sf::Vector2f position;
+            packet >> entityId >> position;
+
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
+            {
+                mEntityManager->getComponent<BaseComponent>(entityId).setPosition(position);
+            }
+
+            if (mEntityManager->hasComponent<PlayerComponent>(entityId))
+            {
+                mEntityManager->getComponent<PlayerComponent>(entityId).getView().setCenter(position);
+            }
+        } break;
+
+        case 102: // Rotation
         {
             sf::Int32 entityId;
             float rotation;
             packet >> entityId >> rotation;
+
             if (mEntityManager->hasComponent<BaseComponent>(entityId))
             {
                 mEntityManager->getComponent<BaseComponent>(entityId).setRotation(rotation);
             }
         } break;
 
-        case 110:
+        case 103: // Stationary
         {
             sf::Int32 entityId;
             bool stationary;

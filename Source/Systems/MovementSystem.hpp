@@ -16,9 +16,10 @@ class MovementSystem : public ses::System
 
         void update(sf::Time dt);
 
-        void sendMovement(sf::Int32 const& entityId, sf::Vector2f const& mvt);
-
-
+        static void sendMovement(sf::Int32 const& entityId, sf::Vector2f const& movement);
+        static void sendPosition(sf::Int32 const& entityId, sf::Vector2f const& position);
+        static void sendRotation(sf::Int32 const& entityId, float angle);
+        static void sendStationary(sf::Int32 const& entityId, bool stationary);
 
         void collision(sf::Int32 const& entityId);
         void handleCollision(sf::Int32 const& entity1, sf::Int32 const& entity2);

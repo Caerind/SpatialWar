@@ -28,8 +28,8 @@ class World
 
         static bool isOnline();
         static bool isServer();
-        //static ses::EntityManager& getEntityManager();
-        //static ses::SystemManager& getSystems();
+        static ses::EntityManager& getEntities();
+        static ses::SystemManager& getSystems();
         static ah::ResourceHolder& getResources();
         static sf::View& getView();
         static Space& getSpace();

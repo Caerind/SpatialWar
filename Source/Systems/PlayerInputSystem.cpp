@@ -50,20 +50,11 @@ void PlayerInputSystem::update(sf::Time dt)
 
             mvt *= b.getSpeed() * dt.asSeconds();
 
-            if (mvt != sf::Vector2f())
-            {
-                sf::Packet packet;
-                sf::Int32 msgId = 100;
-                packet << msgId << msgId << mEntities[i] << mvt;
-                mEntityManager->sendPacket(packet);
+            MovementSystem::sendMovement(mEntities[i],mvt);
 
-                if (s.isStationary())
-                {
-                    sf::Packet packet;
-                    sf::Int32 msgId = 110;
-                    packet << msgId << msgId << mEntities[i] << false;
-                    mEntityManager->sendPacket(packet);
-                }
+            if (mvt != sf::Vector2f() && s.isStationary())
+            {
+                MovementSystem::sendStationary(mEntities[i],false);
             }
         }
 
@@ -75,20 +66,14 @@ void PlayerInputSystem::update(sf::Time dt)
             float rotation = 180.f - atan2(d.x,d.y) * 180.f / 3.14159265f;
             if (rotation != b.getRotation())
             {
-                sf::Packet packet;
-                sf::Int32 msgId = 105;
-                packet << msgId << msgId << mEntities[i] << rotation;
-                mEntityManager->sendPacket(packet);
+                MovementSystem::sendRotation(mEntities[i],rotation);
             }
         }
 
         // Set Stationary
         if (isActive("stationary"))
         {
-            sf::Packet packet;
-            sf::Int32 msgId = 110;
-            packet << msgId << msgId << mEntities[i] << !s.isStationary();
-            mEntityManager->sendPacket(packet);
+            MovementSystem::sendStationary(mEntities[i],!s.isStationary());
         }
 
         ah::Application::instance().setDebugInfo("Position",lp::to_string(b.getPosition().x) + " " + lp::to_string(b.getPosition().y));

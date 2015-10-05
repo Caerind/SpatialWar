@@ -35,7 +35,7 @@ void World::init(bool onlineMode, bool server)
         sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
 
         sf::Int32 playerId = mInstance.mEntities->usePrefab("Player");
-        mInstance.mEntities->getComponent<BaseComponent>(playerId).setPosition(4500.f,4500.f);
+        mInstance.mEntities->getComponent<BaseComponent>(playerId).setPosition(2500.f,2500.f);
 
         mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(playerId).getPosition());
     }
@@ -124,6 +124,16 @@ bool World::isOnline()
 bool World::isServer()
 {
     return mInstance.mServer;
+}
+
+ses::EntityManager& World::getEntities()
+{
+    return *mInstance.mEntities;
+}
+
+ses::SystemManager& World::getSystems()
+{
+    return mInstance.mSystems;
 }
 
 ah::ResourceHolder& World::getResources()

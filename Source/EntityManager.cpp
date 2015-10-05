@@ -13,13 +13,13 @@ EntityManager::EntityManager()
         addComponent<PlayerComponent>(id);
 
         // Origin
-        b.setOrigin(sf::Vector2f(154.f,136.f) * 0.5f);
+        b.setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
 
         // Geometry
         b.setPointCount(4);
         b.setPoint(0,sf::Vector2f(0,0));
-        b.setPoint(1,sf::Vector2f(154.f,0));
-        b.setPoint(2,sf::Vector2f(154.f,136.f));
+        b.setPoint(1,sf::Vector2f(200.f,0));
+        b.setPoint(2,sf::Vector2f(200.f,136.f));
         b.setPoint(3,sf::Vector2f(0,136.f));
 
         // Base Settings
@@ -62,11 +62,11 @@ EntityManager::EntityManager()
         BaseComponent& b = addComponent<BaseComponent>(id);
         PlanetComponent& p = addComponent<PlanetComponent>(id);
 
+        // Geometry // Geom In First For Planet Like Component
+        b.loadFromCircle(p.getShape());
+
         // Origin
         b.setOrigin(p.getRadius(),p.getRadius());
-
-        // Geometry
-        b.loadFromCircle(p.getShape());
 
         // Base Settings
         b.setMass(pow(10,24)); // ~6 time smaller than the Earth
@@ -80,11 +80,11 @@ EntityManager::EntityManager()
         BaseComponent& b = addComponent<BaseComponent>(id);
         PlanetComponent& p = addComponent<PlanetComponent>(id, PlanetComponent::Type::Sun);
 
+        // Geometry // Geom In First For Planet Like Component
+        b.loadFromCircle(p.getShape());
+
         // Origin
         b.setOrigin(p.getRadius(),p.getRadius());
-
-        // Geometry
-        b.loadFromCircle(p.getShape());
 
         // Base Settings
         b.setMass(2.f * pow(10,24)); // ~6 time smaller than the Earth
@@ -99,11 +99,11 @@ EntityManager::EntityManager()
         BaseComponent& b = addComponent<BaseComponent>(id);
         PlanetComponent& p = addComponent<PlanetComponent>(id, PlanetComponent::Type::Moon);
 
+        // Geometry // Geom In First For Planet Like Component
+        b.loadFromCircle(p.getShape());
+
         // Origin
         b.setOrigin(p.getRadius(),p.getRadius());
-
-        // Geometry
-        b.loadFromCircle(p.getShape());
 
         // Base Settings
         b.setMass(0.75f * pow(10,24)); // ~6 time smaller than the Earth
@@ -173,9 +173,11 @@ void EntityManager::handlePacket(sf::Packet& packet)
     {
         // MovementSystem
         case 100: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Move
-        case 105: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Rotate
-        case 110: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Ship Stationary
+        case 101: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Position
+        case 102: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Rotation
+        case 103: mSystems->handlePacket(MovementSystem::getId(),packet); break; // Ship Stationary
 
+        /*
         // BaseSystem
         case 200: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Set Life
         case 201: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Inflige
@@ -185,6 +187,7 @@ void EntityManager::handlePacket(sf::Packet& packet)
         case 210: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Modify Mass
         case 211: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Modify LifeMax
         case 212: mSystems->handlePacket(BaseSystem::getId(),packet); break; // Modify Speed
+        */
 
         default: break;
     }
