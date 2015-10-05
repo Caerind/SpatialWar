@@ -26,3 +26,33 @@ void ShipComponent::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 {
     target.draw(mSprite,states);
 }
+
+void ShipComponent::setMotorId(int motorId)
+{
+    mMotorId = motorId;
+}
+
+int ShipComponent::getMotorId() const
+{
+    return mMotorId;
+}
+
+void ShipComponent::setArmorId(int armorId)
+{
+    mArmorId = armorId;
+}
+
+int ShipComponent::getArmorId() const
+{
+    return mArmorId;
+}
+
+void ShipComponent::setGunId(int gunId)
+{
+    mGunId = gunId;
+}
+
+int ShipComponent::getGunId() const
+{
+    return mGunId;
+}

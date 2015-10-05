@@ -20,9 +20,22 @@ class ShipComponent : public ses::Component, public sf::Drawable
 
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+        void setMotorId(int motorId);
+        int getMotorId() const;
+
+        void setArmorId(int armorId);
+        int getArmorId() const;
+
+        void setGunId(int gunId);
+        int getGunId() const;
+
     private:
         sf::Sprite mSprite;
         bool mStationary;
+
+        int mMotorId;
+        int mArmorId;
+        int mGunId;
 };
 
 #endif // SHIP_HPP
