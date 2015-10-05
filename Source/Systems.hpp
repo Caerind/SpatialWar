@@ -6,5 +6,6 @@
 #include "Systems/MovementSystem.hpp"
 #include "Systems/PlanetAttractionSystem.hpp"
 #include "Systems/BaseSystem.hpp"
+#include "Systems/ShipPartSystem.hpp"
 
 #endif // SYSTEMS_HPP_INCLUDED

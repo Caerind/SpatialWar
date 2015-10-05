@@ -3,6 +3,10 @@
 
 ShipComponent::ShipComponent()
 : ses::Component()
+, mStationary(true)
+, mMotorId(0)
+, mArmorId(0)
+, mGunId(0)
 {
     mSprite.setTexture(World::getResources().getTexture("ship"));
 }

@@ -30,6 +30,7 @@ float BaseComponent::getLifeMax() const
 void BaseComponent::setLifeMax(float lifeMax)
 {
     mLifeMax = lifeMax;
+    mLife = std::max(mLife,mLifeMax);
 }
 
 bool BaseComponent::inflige(float damage)
@@ -67,4 +68,14 @@ float BaseComponent::getMass() const
 void BaseComponent::setMass(float mass)
 {
     mMass = mass;
+}
+
+float BaseComponent::getSpeed() const
+{
+    return mSpeed;
+}
+
+void BaseComponent::setSpeed(float speed)
+{
+    mSpeed = speed;
 }

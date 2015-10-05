@@ -99,6 +99,42 @@ void BaseSystem::handlePacket(sf::Packet& packet)
             }
         } break;
 
+        case 210:
+        {
+            sf::Int32 entityId;
+            float delta;
+            packet >> entityId >> delta;
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
+            {
+                BaseComponent& b = mEntityManager->getComponent<BaseComponent>(entityId);
+                b.setMass(b.getMass() + delta);
+            }
+        } break;
+
+        case 211:
+        {
+            sf::Int32 entityId;
+            float delta;
+            packet >> entityId >> delta;
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
+            {
+                BaseComponent& b = mEntityManager->getComponent<BaseComponent>(entityId);
+                b.setLifeMax(b.getLifeMax() + delta);
+            }
+        } break;
+
+        case 212:
+        {
+            sf::Int32 entityId;
+            float delta;
+            packet >> entityId >> delta;
+            if (mEntityManager->hasComponent<BaseComponent>(entityId))
+            {
+                BaseComponent& b = mEntityManager->getComponent<BaseComponent>(entityId);
+                b.setSpeed(b.getSpeed() + delta);
+            }
+        } break;
+
         default: break;
     }
 }

@@ -25,7 +25,7 @@ void PlayerInputSystem::update(sf::Time dt)
 
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
-        BaseComponent& t = mEntityManager->getComponent<BaseComponent>(mEntities[i]);
+        BaseComponent& b = mEntityManager->getComponent<BaseComponent>(mEntities[i]);
 
         // Movement
         {
@@ -47,7 +47,7 @@ void PlayerInputSystem::update(sf::Time dt)
                 mvt.x += 1.f;
             }
 
-            mvt *= 300.f * dt.asSeconds();
+            mvt *= b.getSpeed() * dt.asSeconds();
 
             if (mvt != sf::Vector2f())
             {
@@ -58,7 +58,10 @@ void PlayerInputSystem::update(sf::Time dt)
 
                 if (mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary())
                 {
-                    mEntityManager->getComponent<ShipComponent>(mEntities[i]).setStationary(false);
+                    sf::Packet packet;
+                    sf::Int32 msgId = 110;
+                    packet << msgId << msgId << mEntities[i] << false;
+                    mEntityManager->sendPacket(packet);
                 }
             }
         }
@@ -67,12 +70,13 @@ void PlayerInputSystem::update(sf::Time dt)
 
         // Look At
         {
-            sf::Vector2f d = mPos - t.getPosition();
+            sf::Vector2f d = mPos - b.getPosition();
             float rotation = 180.f - atan2(d.x,d.y) * 180.f / 3.14159265f;
-            if (rotation != t.getRotation())
+            if (rotation != b.getRotation())
             {
                 sf::Packet packet;
-                packet << 105 << 105 << mEntities[i] << rotation;
+                sf::Int32 msgId = 105;
+                packet << msgId << msgId << mEntities[i] << rotation;
                 mEntityManager->sendPacket(packet);
             }
         }
@@ -80,21 +84,14 @@ void PlayerInputSystem::update(sf::Time dt)
         // Set Stationary
         if (isActive("stationary"))
         {
-            mEntityManager->getComponent<ShipComponent>(mEntities[i]).setStationary(true);
+            sf::Packet packet;
+            sf::Int32 msgId = 110;
+            packet << msgId << msgId << mEntities[i] << !mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary();
+            mEntityManager->sendPacket(packet);
         }
 
-        ah::Application::instance().setDebugInfo("Position",lp::to_string(t.getPosition().x) + " " + lp::to_string(t.getPosition().y));
+        ah::Application::instance().setDebugInfo("Position",lp::to_string(b.getPosition().x) + " " + lp::to_string(b.getPosition().y));
     }
 
     mMap->clearEvents();
-}
-
-void PlayerInputSystem::handlePacket(sf::Packet& packet)
-{
-    sf::Int32 eventId;
-    packet >> eventId;
-    switch (eventId)
-    {
-        default: break;
-    }
 }

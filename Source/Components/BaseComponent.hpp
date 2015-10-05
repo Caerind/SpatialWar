@@ -24,10 +24,14 @@ class BaseComponent : public ses::Component, public lp::CollisionShape
         float getMass() const;
         void setMass(float mass);
 
+        float getSpeed() const;
+        void setSpeed(float speed);
+
     private:
         float mLife;
         float mLifeMax;
         float mMass;
+        float mSpeed;
 };
 
 #endif // BASECOMPONENT_HPP

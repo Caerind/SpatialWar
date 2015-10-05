@@ -56,13 +56,11 @@ void World::init(bool onlineMode, bool server)
         sf::Int32 pId = mInstance.mEntities->usePrefab("Player");
         mInstance.mEntities->getComponent<BaseComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPosition(sf::Vector2f(2500.f,2500.f));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setMass(100);
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPointCount(4);
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(0,sf::Vector2f(0,0));
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(1,sf::Vector2f(200.f,0));
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(2,sf::Vector2f(200.f,136.f));
         mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(3,sf::Vector2f(0,136.f));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setLife(100.f);
 
         mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(pId).getPosition());
     }

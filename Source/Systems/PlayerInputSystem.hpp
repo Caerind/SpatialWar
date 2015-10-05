@@ -18,8 +18,6 @@ class PlayerInputSystem : public ses::System, public ah::ActionTarget
         static std::string getId();
 
         void update(sf::Time dt);
-
-        void handlePacket(sf::Packet& packet);
 };
 
 #endif // PLAYERINPUTSYSTEM_HPP

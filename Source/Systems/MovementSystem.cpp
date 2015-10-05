@@ -23,12 +23,12 @@ void MovementSystem::update(sf::Time dt)
 {
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
+        float d = mEntityManager->getComponent<BaseComponent>(mEntities[i]).getSpeed();
         if (mEntityManager->hasComponent<CometComponent>(mEntities[i]))
         {
             CometComponent& c = mEntityManager->getComponent<CometComponent>(mEntities[i]);
             sf::Vector2f u = c.getDirection();
-            float l = c.getSpeed();
-            sf::Vector2f mvt = u * l * dt.asSeconds();
+            sf::Vector2f mvt = u * d * dt.asSeconds();
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
@@ -41,8 +41,7 @@ void MovementSystem::update(sf::Time dt)
         {
             BulletComponent& c = mEntityManager->getComponent<BulletComponent>(mEntities[i]);
             sf::Vector2f u = c.getDirection();
-            float l = c.getSpeed();
-            sf::Vector2f mvt = u * l * dt.asSeconds();
+            sf::Vector2f mvt = u * d * dt.asSeconds();
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
@@ -55,9 +54,19 @@ void MovementSystem::update(sf::Time dt)
         {
             AsteroidComponent& c = mEntityManager->getComponent<AsteroidComponent>(mEntities[i]);
             sf::Vector2f u = c.getDirection();
-            float l = c.getSpeed();
-            c.setSpeed(l - 1.f);
-            sf::Vector2f mvt = u * l * dt.asSeconds();
+            if (d > 0.f)
+            {
+                d--;
+                sf::Packet packet;
+                sf::Int32 msgId = 212;
+                packet << msgId << msgId << mEntities[i] << -1.f;
+                mEntityManager->sendPacket(packet);
+            }
+            if (d < 0.f)
+            {
+                d = 0.f;
+            }
+            sf::Vector2f mvt = u * d * dt.asSeconds();
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
@@ -70,9 +79,19 @@ void MovementSystem::update(sf::Time dt)
         {
             ResourceComponent& c = mEntityManager->getComponent<ResourceComponent>(mEntities[i]);
             sf::Vector2f u = c.getDirection();
-            float l = c.getSpeed();
-            c.setSpeed(l - 1.f);
-            sf::Vector2f mvt = u * l * dt.asSeconds();
+            if (d > 0.f)
+            {
+                d--;
+                sf::Packet packet;
+                sf::Int32 msgId = 212;
+                packet << msgId << msgId << mEntities[i] << -1.f;
+                mEntityManager->sendPacket(packet);
+            }
+            if (d < 0.f)
+            {
+                d = 0.f;
+            }
+            sf::Vector2f mvt = u * d * dt.asSeconds();
             if (mvt != sf::Vector2f())
             {
                 sf::Packet packet;
@@ -210,6 +229,17 @@ void MovementSystem::handlePacket(sf::Packet& packet)
             if (mEntityManager->hasComponent<BaseComponent>(entityId))
             {
                 mEntityManager->getComponent<BaseComponent>(entityId).setRotation(rotation);
+            }
+        } break;
+
+        case 110:
+        {
+            sf::Int32 entityId;
+            bool stationary;
+            packet >> entityId >> stationary;
+            if (mEntityManager->hasComponent<ShipComponent>(entityId))
+            {
+                mEntityManager->getComponent<ShipComponent>(entityId).setStationary(stationary);
             }
         } break;
 
