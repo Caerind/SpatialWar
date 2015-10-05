@@ -1,17 +1,12 @@
 #include "MovementSystem.hpp"
 #include "../../Lib/EntitySystem/EntityManager.hpp"
+#include "../../Lib/Aharos/Helper/Math.hpp"
 #include "../World.hpp"
 
 MovementSystem::MovementSystem(ses::EntityManager::Ptr entityManager)
 : ses::System(entityManager)
 {
     mFilter.requires(BaseComponent::getId());
-    std::vector<std::string> movableEntities;
-    movableEntities.push_back(CometComponent::getId());
-    movableEntities.push_back(BulletComponent::getId());
-    movableEntities.push_back(AsteroidComponent::getId());
-    movableEntities.push_back(ResourceComponent::getId());
-    mFilter.requiresOne(movableEntities);
 }
 
 std::string MovementSystem::getId()
@@ -21,84 +16,97 @@ std::string MovementSystem::getId()
 
 void MovementSystem::update(sf::Time dt)
 {
+    if (mEntityManager == nullptr)
+        return;
+
+    ses::ComponentFilter filterPlanets;
+    filterPlanets.requires(BaseComponent::getId());
+    filterPlanets.requires(PlanetComponent::getId());
+    auto planets = mEntityManager->getEntities(filterPlanets);
+
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
-        float d = mEntityManager->getComponent<BaseComponent>(mEntities[i]).getSpeed();
-        if (mEntityManager->hasComponent<CometComponent>(mEntities[i]))
+        BaseComponent& b = mEntityManager->getComponent<BaseComponent>(mEntities[i]);
+
+        // MRU
+        if (mEntityManager->hasComponent<CometComponent>(mEntities[i])
+        || mEntityManager->hasComponent<BulletComponent>(mEntities[i]))
         {
-            CometComponent& c = mEntityManager->getComponent<CometComponent>(mEntities[i]);
-            sf::Vector2f u = c.getDirection();
-            sf::Vector2f mvt = u * d * dt.asSeconds();
-            if (mvt != sf::Vector2f())
-            {
-                sf::Packet packet;
-                sf::Int32 msgId = 100;
-                packet << msgId << msgId << mEntities[i] << mvt;
-                mEntityManager->sendPacket(packet);
-            }
+            sf::Vector2f mvt = b.getDirection() * b.getSpeed() * dt.asSeconds();
+            sendMovement(mEntities[i],mvt);
         }
-        else if (mEntityManager->hasComponent<BulletComponent>(mEntities[i]))
+
+        // MRU with speed reduction
+        if (mEntityManager->hasComponent<AsteroidComponent>(mEntities[i])
+        || mEntityManager->hasComponent<ResourceComponent>(mEntities[i]))
         {
-            BulletComponent& c = mEntityManager->getComponent<BulletComponent>(mEntities[i]);
-            sf::Vector2f u = c.getDirection();
-            sf::Vector2f mvt = u * d * dt.asSeconds();
-            if (mvt != sf::Vector2f())
+            if (b.getSpeed() > 0.f)
             {
-                sf::Packet packet;
-                sf::Int32 msgId = 100;
-                packet << msgId << msgId << mEntities[i] << mvt;
-                mEntityManager->sendPacket(packet);
-            }
-        }
-        else if (mEntityManager->hasComponent<AsteroidComponent>(mEntities[i]))
-        {
-            AsteroidComponent& c = mEntityManager->getComponent<AsteroidComponent>(mEntities[i]);
-            sf::Vector2f u = c.getDirection();
-            if (d > 0.f)
-            {
-                d--;
                 sf::Packet packet;
                 sf::Int32 msgId = 212;
-                packet << msgId << msgId << mEntities[i] << -1.f;
+                packet << msgId << msgId << mEntities[i] << -25.f * dt.asSeconds();
                 mEntityManager->sendPacket(packet);
             }
-            if (d < 0.f)
-            {
-                d = 0.f;
-            }
-            sf::Vector2f mvt = u * d * dt.asSeconds();
-            if (mvt != sf::Vector2f())
-            {
-                sf::Packet packet;
-                sf::Int32 msgId = 100;
-                packet << msgId << msgId << mEntities[i] << mvt;
-                mEntityManager->sendPacket(packet);
-            }
+            sf::Vector2f mvt = b.getDirection() * b.getSpeed() * dt.asSeconds();
+            sendMovement(mEntities[i],mvt);
         }
-        else if (mEntityManager->hasComponent<ResourceComponent>(mEntities[i]))
+
+        if (!mEntityManager->hasComponent<PlanetComponent>(mEntities[i]))
         {
-            ResourceComponent& c = mEntityManager->getComponent<ResourceComponent>(mEntities[i]);
-            sf::Vector2f u = c.getDirection();
-            if (d > 0.f)
+            /*
+            // Uncomment if we don't want planet attraction on bullets
+            if (!mEntityManager->hasComponent<BulletComponent>(mEntities[i]))
             {
-                d--;
-                sf::Packet packet;
-                sf::Int32 msgId = 212;
-                packet << msgId << msgId << mEntities[i] << -1.f;
-                mEntityManager->sendPacket(packet);
-            }
-            if (d < 0.f)
+            */
+            for (std::size_t j = 0; j < planets.size(); j++)
             {
-                d = 0.f;
+                sf::Vector2f pPos = mEntityManager->getComponent<BaseComponent>(planets[j]).getPosition();
+                float m = mEntityManager->getComponent<BaseComponent>(planets[j]).getMass();
+                float g = 2.f * pow(10,-11); // g is modified to fit in the game
+
+                sf::Vector2f diff = pPos - b.getPosition();
+                float d = lp::length(diff);
+                if (d < 10000.f)
+                {
+                    d *= 100.f; // add a constant to fit in the game
+                    sf::Vector2f u = lp::unitVector(diff);
+                    sf::Vector2f mvt = u * g * m * dt.asSeconds() / (d * d);
+
+                    bool stationary = false;
+                    if (mEntityManager->hasComponent<ShipComponent>(mEntities[i]))
+                    {
+                        if (mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary())
+                        {
+                            stationary = true;
+                        }
+                    }
+
+                    if (!stationary)
+                    {
+                        sendMovement(mEntities[i],mvt);
+                    }
+                }
             }
-            sf::Vector2f mvt = u * d * dt.asSeconds();
-            if (mvt != sf::Vector2f())
-            {
-                sf::Packet packet;
-                sf::Int32 msgId = 100;
-                packet << msgId << msgId << mEntities[i] << mvt;
-                mEntityManager->sendPacket(packet);
+
+            /*
+            // Uncomment if we don't want planet attraction on bullets
             }
+            */
+
+        }
+    }
+}
+
+void MovementSystem::sendMovement(sf::Int32 const& entityId, sf::Vector2f const& mvt)
+{
+    if (mvt != sf::Vector2f(0.f,0.f))
+    {
+        if (lp::length(mvt) >= 0.01f)
+        {
+            sf::Packet packet;
+            sf::Int32 msgId = 100;
+            packet << msgId << msgId << entityId << mvt;
+            mEntityManager->sendPacket(packet);
         }
     }
 }
@@ -140,14 +148,6 @@ void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& 
         {
             // Strange ?
         }
-        else if (mEntityManager->hasComponent<CometComponent>(entity2))
-        {
-            // Remove entity2
-            sf::Packet packet;
-            sf::Int32 msgId = 203;
-            packet << msgId << msgId << entity2;
-            mEntityManager->sendPacket(packet);
-        }
     }
     else if (mEntityManager->hasComponent<ShipComponent>(entity1))
     {
@@ -163,31 +163,7 @@ void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& 
         {
             // Apply Damage to both
         }
-        else if (mEntityManager->hasComponent<CometComponent>(entity2))
-        {
-            // Apply Damage to both
-        }
     }
-    else if (mEntityManager->hasComponent<CometComponent>(entity1))
-    {
-        if (mEntityManager->hasComponent<PlanetComponent>(entity2))
-        {
-            // Remove entity1
-            sf::Packet packet;
-            sf::Int32 msgId = 203;
-            packet << msgId << msgId << entity1;
-            mEntityManager->sendPacket(packet);
-        }
-        else if (mEntityManager->hasComponent<ShipComponent>(entity2))
-        {
-            // Apply Damage to both
-        }
-        else if (mEntityManager->hasComponent<CometComponent>(entity2))
-        {
-            // Apply Damage to both
-        }
-    }
-
 }
 
 void MovementSystem::handlePacket(sf::Packet& packet)

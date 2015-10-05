@@ -15,6 +15,11 @@ class MovementSystem : public ses::System
         static std::string getId();
 
         void update(sf::Time dt);
+
+        void sendMovement(sf::Int32 const& entityId, sf::Vector2f const& mvt);
+
+
+
         void collision(sf::Int32 const& entityId);
         void handleCollision(sf::Int32 const& entity1, sf::Int32 const& entity2);
 

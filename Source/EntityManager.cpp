@@ -102,6 +102,9 @@ void EntityManager::handlePacket(sf::Packet& packet)
 {
     sf::Int32 eventId;
     packet >> eventId;
+
+    std::cout << static_cast<sf::Int32>(eventId) << std::endl;
+
     switch (eventId)
     {
         // MovementSystem

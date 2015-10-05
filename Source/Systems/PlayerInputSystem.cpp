@@ -26,6 +26,7 @@ void PlayerInputSystem::update(sf::Time dt)
     for (std::size_t i = 0; i < mEntities.size(); i++)
     {
         BaseComponent& b = mEntityManager->getComponent<BaseComponent>(mEntities[i]);
+        ShipComponent& s = mEntityManager->getComponent<ShipComponent>(mEntities[i]);
 
         // Movement
         {
@@ -56,7 +57,7 @@ void PlayerInputSystem::update(sf::Time dt)
                 packet << msgId << msgId << mEntities[i] << mvt;
                 mEntityManager->sendPacket(packet);
 
-                if (mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary())
+                if (s.isStationary())
                 {
                     sf::Packet packet;
                     sf::Int32 msgId = 110;
@@ -86,11 +87,14 @@ void PlayerInputSystem::update(sf::Time dt)
         {
             sf::Packet packet;
             sf::Int32 msgId = 110;
-            packet << msgId << msgId << mEntities[i] << !mEntityManager->getComponent<ShipComponent>(mEntities[i]).isStationary();
+            packet << msgId << msgId << mEntities[i] << !s.isStationary();
             mEntityManager->sendPacket(packet);
         }
 
         ah::Application::instance().setDebugInfo("Position",lp::to_string(b.getPosition().x) + " " + lp::to_string(b.getPosition().y));
+        ah::Application::instance().setDebugInfo("Motor",lp::to_string(s.getMotorId()));
+        ah::Application::instance().setDebugInfo("Armor",lp::to_string(s.getArmorId()));
+        ah::Application::instance().setDebugInfo("Gun",lp::to_string(s.getGunId()));
     }
 
     mMap->clearEvents();

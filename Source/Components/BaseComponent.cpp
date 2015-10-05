@@ -79,3 +79,13 @@ void BaseComponent::setSpeed(float speed)
 {
     mSpeed = speed;
 }
+
+sf::Vector2f BaseComponent::getDirection() const
+{
+    return mDirection;
+}
+
+void BaseComponent::setDirection(sf::Vector2f direction)
+{
+    mDirection = direction;
+}

@@ -27,11 +27,16 @@ class BaseComponent : public ses::Component, public lp::CollisionShape
         float getSpeed() const;
         void setSpeed(float speed);
 
+        sf::Vector2f getDirection() const;
+        void setDirection(sf::Vector2f direction);
+
     private:
         float mLife;
         float mLifeMax;
         float mMass;
         float mSpeed;
+
+        sf::Vector2f mDirection;
 };
 
 #endif // BASECOMPONENT_HPP
