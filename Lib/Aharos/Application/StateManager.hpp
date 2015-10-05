@@ -20,7 +20,7 @@ class StateManager : public sf::Drawable
 		StateManager(Application& app);
 
 		template<typename T>
-		void registerState(std::string const& id);
+		void registerState();
 
         void handleEvent(sf::Event const& event);
 		void update(sf::Time dt);
@@ -73,9 +73,9 @@ class StateManager : public sf::Drawable
 };
 
 template<typename T>
-void StateManager::registerState(std::string const& id)
+void StateManager::registerState()
 {
-	mFactories[id] = [this] ()
+	mFactories[T::getID()] = [this] ()
 	{
 		return State::Ptr(new T(*this));
 	};

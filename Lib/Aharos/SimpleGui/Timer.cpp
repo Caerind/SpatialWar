@@ -15,7 +15,7 @@ void Timer::update(sf::Event const& event, sf::Vector2f mousePosition)
 {
     if (mVisible && mEnabled)
     {
-        if (isRunning() && getRemainingTime() < sf::seconds(0.05))
+        if (isRunning() && getRemainingTime() < sf::seconds(0.05f))
         {
             if (mCallbacks.size() >= 1)
                 if (mCallbacks[0])
@@ -31,13 +31,13 @@ void Timer::update(sf::Event const& event, sf::Vector2f mousePosition)
         if (h == 0)
         {
             if (m != 0)
-                oss << m << "m " << s << "s";
+                oss << m << "m" << s << "s";
             else
                 oss << s << "s";
         }
         else
         {
-            oss << h << "h " << m << "m";
+            oss << h << "h" << m << "m";
         }
         mText.setString(oss.str());
         updateText();

@@ -28,7 +28,7 @@ class Application : public Log, public ResourceHolder, public Window, public Deb
         void runMaxFps();
 
         template <typename T>
-        void registerState(std::string const& stateId);
+        void registerState();
         void pushState(std::string const& stateId);
 
     private:
@@ -49,9 +49,9 @@ class Application : public Log, public ResourceHolder, public Window, public Deb
 };
 
 template <typename T>
-void Application::registerState(std::string const& stateId)
+void Application::registerState()
 {
-    mStates.registerState<T>(stateId);
+    mStates.registerState<T>();
 }
 
 }

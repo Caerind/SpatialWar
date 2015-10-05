@@ -1,7 +1,7 @@
 #ifndef AH_DEBUGSCREEN_HPP
 #define AH_DEBUGSCREEN_HPP
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -35,7 +35,7 @@ class DebugScreen : public sf::Drawable
         std::shared_ptr<sf::Font> mFont;
         std::size_t mCharsize;
         bool mShowDebugScreen;
-        std::map<std::string,sf::Text> mValues;
+        std::unordered_map<std::string,sf::Text> mValues;
 };
 
 }
