@@ -6,13 +6,28 @@ EntityManager::EntityManager()
     setPrefab("Player",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
+
+        // Components
         BaseComponent& b = addComponent<BaseComponent>(id);
         ShipComponent& s = addComponent<ShipComponent>(id);
+        addComponent<PlayerComponent>(id);
+
+        // Origin
+        b.setOrigin(sf::Vector2f(154.f,136.f) * 0.5f);
+
+        // Geometry
+        b.setPointCount(4);
+        b.setPoint(0,sf::Vector2f(0,0));
+        b.setPoint(1,sf::Vector2f(154.f,0));
+        b.setPoint(2,sf::Vector2f(154.f,136.f));
+        b.setPoint(3,sf::Vector2f(0,136.f));
+
+        // Base Settings
         b.setSpeed(ShipPartSystem::getMotorSpeed(0));
         b.setMass(ShipPartSystem::getMotorMass(0) + ShipPartSystem::getArmorMass(0) + ShipPartSystem::getGunMass(0));
         b.setLifeMax(ShipPartSystem::getArmor(0));
         b.restoreFullLife();
-        addComponent<PlayerComponent>(id);
+
         return id;
     });
 
@@ -44,39 +59,88 @@ EntityManager::EntityManager()
     setPrefab("Planet",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
-        addComponent<PlanetComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
+        PlanetComponent& p = addComponent<PlanetComponent>(id);
+
+        // Origin
+        b.setOrigin(p.getRadius(),p.getRadius());
+
+        // Geometry
+        b.loadFromCircle(p.getShape());
+
+        // Base Settings
+        b.setMass(pow(10,24)); // ~6 time smaller than the Earth
+        b.setLife(10000000.f);
         return id;
     });
 
     setPrefab("Sun",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
-        addComponent<PlanetComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
+        PlanetComponent& p = addComponent<PlanetComponent>(id, PlanetComponent::Type::Sun);
+
+        // Origin
+        b.setOrigin(p.getRadius(),p.getRadius());
+
+        // Geometry
+        b.loadFromCircle(p.getShape());
+
+        // Base Settings
+        b.setMass(2.f * pow(10,24)); // ~6 time smaller than the Earth
+        b.setLife(100000000.f);
+
         return id;
     });
 
     setPrefab("Moon",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
-        addComponent<PlanetComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
+        PlanetComponent& p = addComponent<PlanetComponent>(id, PlanetComponent::Type::Moon);
+
+        // Origin
+        b.setOrigin(p.getRadius(),p.getRadius());
+
+        // Geometry
+        b.loadFromCircle(p.getShape());
+
+        // Base Settings
+        b.setMass(0.75f * pow(10,24)); // ~6 time smaller than the Earth
+        b.setLife(5000000.f);
+
         return id;
     });
 
     setPrefab("Comet",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
-        addComponent<CometComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
+        CometComponent& c = addComponent<CometComponent>(id);
+
+        // Origin
+        b.setOrigin(sf::Vector2f(313.f,489.f) * 0.5f);
+
+        // Geometry
+        b.setPointCount(4);
+        b.setPoint(0,sf::Vector2f(0,0));
+        b.setPoint(1,sf::Vector2f(313.f,0));
+        b.setPoint(2,sf::Vector2f(313.f,489.f));
+        b.setPoint(3,sf::Vector2f(0,489.f));
+
+        // Base Settings
+        b.setMass(500.f);
+        b.setLifeMax(1000.f);
+        b.restoreFullLife();
+        b.setSpeed(500.f);
+        b.setDirection(sf::Vector2f(-0.5f,1.f));
         return id;
     });
 
     setPrefab("Bullet",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
         addComponent<BulletComponent>(id);
         return id;
     });
@@ -84,7 +148,7 @@ EntityManager::EntityManager()
     setPrefab("Asteroid",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
         addComponent<AsteroidComponent>(id);
         return id;
     });
@@ -92,7 +156,7 @@ EntityManager::EntityManager()
     setPrefab("Resource",[&]() -> sf::Int32
     {
         sf::Int32 id = addEntity();
-        addComponent<BaseComponent>(id);
+        BaseComponent& b = addComponent<BaseComponent>(id);
         addComponent<ResourceComponent>(id);
         return id;
     });
@@ -103,7 +167,7 @@ void EntityManager::handlePacket(sf::Packet& packet)
     sf::Int32 eventId;
     packet >> eventId;
 
-    std::cout << static_cast<sf::Int32>(eventId) << std::endl;
+    std::cout << eventId << std::endl;
 
     switch (eventId)
     {

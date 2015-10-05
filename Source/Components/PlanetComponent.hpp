@@ -11,16 +11,17 @@
 class PlanetComponent : public ses::Component, public sf::Drawable
 {
     public:
-        PlanetComponent();
-
-        static std::string getId();
-
         enum Type
         {
             Planet,
             Sun,
             Moon,
         };
+
+        PlanetComponent(Type type = Type::Planet);
+
+        static std::string getId();
+
 
         Type getType() const;
         void setType(Type type);
@@ -33,9 +34,8 @@ class PlanetComponent : public ses::Component, public sf::Drawable
         sf::CircleShape& getShape();
 
     private:
-        sf::CircleShape mShape;
-        float mRadius;
         Type mType;
+        sf::CircleShape mShape;
 };
 
 #endif // PLANETCOMPONENT_HPP

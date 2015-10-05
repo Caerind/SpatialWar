@@ -33,37 +33,11 @@ void World::init(bool onlineMode, bool server)
     if (!isOnline() && !isServer())
     {
         sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
-        mInstance.mEntities->getComponent<BaseComponent>(planetId).loadFromCircle(mInstance.mEntities->getComponent<PlanetComponent>(planetId).getShape());
-        float r = mInstance.mEntities->getComponent<PlanetComponent>(planetId).getRadius();
-        mInstance.mEntities->getComponent<BaseComponent>(planetId).setOrigin(r,r);
-        mInstance.mEntities->getComponent<BaseComponent>(planetId).setMass(pow(10,24)); // ~6 time smaller than the Earth
-        mInstance.mEntities->getComponent<BaseComponent>(planetId).setLife(1000000.f);
 
-        /*
-        sf::Int32 cometId = mInstance.mEntities->usePrefab("Comet");
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setOrigin(sf::Vector2f(313.f,489.f) * 0.5f);
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPosition(sf::Vector2f(2500.f,-2500.f));
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setMass(100);
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPointCount(4);
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(0,sf::Vector2f(0,0));
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(1,sf::Vector2f(313.f,0));
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(2,sf::Vector2f(313.f,489.f));
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setPoint(3,sf::Vector2f(0,489.f));
-        mInstance.mEntities->getComponent<BaseComponent>(cometId).setLife(1000.f);
-        mInstance.mEntities->getComponent<CometComponent>(cometId).setSpeed(400.f);
-        mInstance.mEntities->getComponent<CometComponent>(cometId).setDirection(sf::Vector2f(-0.5f,1.f));
-        */
+        sf::Int32 playerId = mInstance.mEntities->usePrefab("Player");
+        mInstance.mEntities->getComponent<BaseComponent>(playerId).setPosition(4500.f,4500.f);
 
-        sf::Int32 pId = mInstance.mEntities->usePrefab("Player");
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setOrigin(sf::Vector2f(200.f,136.f) * 0.5f);
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setPosition(sf::Vector2f(2500.f,2500.f));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setPointCount(4);
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(0,sf::Vector2f(0,0));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(1,sf::Vector2f(200.f,0));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(2,sf::Vector2f(200.f,136.f));
-        mInstance.mEntities->getComponent<BaseComponent>(pId).setPoint(3,sf::Vector2f(0,136.f));
-
-        mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(pId).getPosition());
+        mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(playerId).getPosition());
     }
 }
 
@@ -124,6 +98,8 @@ void World::update(sf::Time dt)
         // Background
         mInstance.mSpace.update(mInstance.mView);
     }
+
+    ah::Application::instance().setDebugInfo("Entities",lp::to_string(mInstance.mEntities->entitiesCount()));
 }
 
 void World::render(sf::RenderTarget& target, sf::RenderStates states)

@@ -26,12 +26,12 @@ void BaseSystem::update()
             {
                 mEntityManager->getComponent<BaseComponent>(mEntities[i]).restoreFullLife();
                 mEntityManager->getComponent<BaseComponent>(mEntities[i]).setPosition(sf::Vector2f(2500.f,2500.f));
-                std::cout << "ok" << std::endl;
+                std::cout << "killed an entity" << std::endl;
             }
             else
             {
                 mEntityManager->removeEntity(mEntities[i]);
-                std::cout << "ok" << std::endl;
+                std::cout << "killed an entity" << std::endl;
             }
         }
     }

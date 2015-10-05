@@ -22,8 +22,7 @@ int main()
     ah::Application::instance().loadFont("future_thin","Assets/Fonts/future_thin.ttf");
 
     // Register States
-    ah::Application::instance().registerState<GameState>();
-    ah::Application::instance().registerState<LoadingState>();
+    states::registerStates();
 
     // Run
     ah::Application::instance().pushState(LoadingState::getID());

@@ -143,6 +143,7 @@ void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& 
             sf::Int32 msgId = 203;
             packet << msgId << msgId << entity2;
             mEntityManager->sendPacket(packet);
+            std::cout << "Collision : " << msgId << std::endl;
         }
         else if (mEntityManager->hasComponent<PlanetComponent>(entity2))
         {
@@ -158,6 +159,7 @@ void MovementSystem::handleCollision(sf::Int32 const& entity1, sf::Int32 const& 
             sf::Int32 msgId = 203;
             packet << msgId << msgId << entity1;
             mEntityManager->sendPacket(packet);
+            std::cout << "Collision : " << msgId << std::endl;
         }
         else if (mEntityManager->hasComponent<ShipComponent>(entity2))
         {

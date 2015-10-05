@@ -10,12 +10,12 @@ LoadingState::LoadingState(ah::StateManager& manager)
     mBackground.setFillColor(sf::Color(110,40,240));
 
     mText.setCharacterSize(40);
-    mText.setString("   Loading");
+    mText.setString("Loading");
     mText.setFont(ah::Application::instance().getFont("future"));
     mText.setColor(sf::Color::White);
-    mText.setPosition(400.f - mText.getGlobalBounds().width * 0.5f - 25.f, 300.f - mText.getGlobalBounds().height * 0.5f);
+    mText.setPosition(400.f - mText.getGlobalBounds().width * 0.5f, 300.f - mText.getGlobalBounds().height * 0.5f - 25.f);
 
-    mTimer.setPosition(400.f-150.f,300.f+50.f+50.f);
+    mTimer.setPosition(400.f-150.f,300.f+50.f+25.f);
     mTimer.setSize(sf::Vector2f(300.f,50.f));
     mTimer.setFillColor(sf::Color(40,195,230));
     mTimer.getShapeTop().setFillColor(sf::Color(40,90,240));

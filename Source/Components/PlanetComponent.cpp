@@ -1,13 +1,29 @@
 #include "PlanetComponent.hpp"
 #include "../World.hpp"
 
-PlanetComponent::PlanetComponent()
+PlanetComponent::PlanetComponent(PlanetComponent::Type type)
 : ses::Component()
+, mType(type)
 {
-    sf::Texture* texture = &World::getResources().getTexture("planet");
-    mShape.setRadius(texture->getSize().x * 0.5f);
-    mShape.setTexture(texture);
-    mType = PlanetComponent::Planet;
+    sf::Texture* texture = nullptr;
+    if (mType == PlanetComponent::Type::Planet)
+    {
+        texture = &World::getResources().getTexture("planet");
+    }
+    else if (mType == PlanetComponent::Type::Sun)
+    {
+        texture = &World::getResources().getTexture("planet");
+    }
+    else // Moon
+    {
+        texture = &World::getResources().getTexture("planet");
+    }
+
+    if (texture != nullptr)
+    {
+        mShape.setRadius(texture->getSize().x * 0.5f);
+        mShape.setTexture(texture);
+    }
 }
 
 std::string PlanetComponent::getId()
