@@ -28,6 +28,9 @@ class World
         static void update(sf::Time dt);
         static void render(sf::RenderTarget& target, sf::RenderStates states);
 
+        static bool isClient();
+        static bool isServer();
+
         static sf::TcpSocket& getSocket();
         static ses::EntityManager& getEntities();
         static ses::SystemManager& getSystems();
@@ -41,7 +44,10 @@ class World
 
         static World mInstance;
 
+        #ifdef SW_CLIENT
         sf::TcpSocket mSocket;
+        #endif
+
         ses::EntityManager::Ptr mEntities;
         ses::SystemManager mSystems;
         ah::ResourceHolder mResources;

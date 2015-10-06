@@ -12,10 +12,10 @@ class PlayerComponent : public ses::Component
 
         static std::string getId();
 
-        sf::View* getView();
+        sf::View& getView();
 
     private:
-        sf::View* mView;
+        sf::View& mView;
 };
 
 #endif // PLAYERCOMPONENT_HPP

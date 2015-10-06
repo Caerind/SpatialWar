@@ -4,9 +4,7 @@
 BulletComponent::BulletComponent()
 : ses::Component()
 {
-    #ifdef SW_CLIENT
     // TODO : mSprite.setTexture(World::getResources().getTexture("bullet"));
-    #endif
 }
 
 std::string BulletComponent::getId()

@@ -29,6 +29,9 @@ Configuration::Configuration()
     (*mPlayerInput)["action1"] = thor::Action(sf::Mouse::Left,thor::Action::PressOnce);
     (*mPlayerInput)["action2"] = thor::Action(sf::Mouse::Right,thor::Action::PressOnce);
     (*mPlayerInput)["action3"] = thor::Action(sf::Mouse::Middle,thor::Action::PressOnce);
+
+    mAddress = sf::IpAddress::LocalHost;
+    mPort = 4567;
 }
 
 Configuration::~Configuration()

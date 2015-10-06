@@ -4,9 +4,7 @@
 CometComponent::CometComponent()
 : ses::Component()
 {
-    #ifdef SW_CLIENT
     mSprite.setTexture(World::getResources().getTexture("comet"));
-    #endif
 }
 
 std::string CometComponent::getId()

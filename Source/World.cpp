@@ -6,15 +6,21 @@ void World::init()
 {
     terminate();
 
-    // Load EntityManager
+    // Load EntityManager & SystemManager
     mInstance.mEntities = std::shared_ptr<ses::EntityManager>(new EntityManager());
-
-    // Load SystemManager
     mInstance.mSystems.setManager(mInstance.mEntities);
-    mInstance.mSystems.addSystem<RenderSystem>();
-    mInstance.mSystems.addSystem<PlayerInputSystem>();
-    mInstance.mSystems.addSystem<MovementSystem>();
-    mInstance.mSystems.addSystem<BaseSystem>();
+    if (isClient())
+    {
+        mInstance.mSystems.addSystem<RenderSystem>();
+        mInstance.mSystems.addSystem<PlayerInputSystem>();
+    }
+    else
+    {
+        //mInstance.mSystems.addSystem<RenderSystem>(); // TODO : If we want to render the world latter in server
+        mInstance.mSystems.addSystem<MovementSystem>();
+        mInstance.mSystems.addSystem<BaseSystem>();
+    }
+
 
     // Load Resources
     mInstance.mResources.loadTexture("ship","Assets/Textures/SpaceShipNormal.png");
@@ -27,29 +33,33 @@ void World::init()
     mInstance.mView = ah::Application::instance().getDefaultView();
     mInstance.mView.zoom(8.f);
 
-    // Load Game -> Moved To Server Loading
-    /*if (true)
+    if (isServer())
     {
-        sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
+        // Load Game
+        mInstance.mEntities->usePrefab("Planet");
+    }
 
-        sf::Int32 playerId = mInstance.mEntities->usePrefab("Player");
-        mInstance.mEntities->getComponent<BaseComponent>(playerId).setPosition(2500.f,2500.f);
-
-        mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(playerId).getPosition());
-    }*/
 
     // Init Socket
+    #ifdef SW_CLIENT
+
     mInstance.mSocket.setBlocking(true);
     while (mInstance.mSocket.connect(Configuration::getServerAddress(),Configuration::getServerPort()) != sf::Socket::Done)
     {
         sf::sleep(sf::seconds(0.001f));
     }
     mInstance.mSocket.setBlocking(false);
+
+    #endif // SW_CLIENT
 }
 
 void World::terminate()
 {
-    // Deconnect
+    // Deconnect Socket
+    #ifdef SW_CLIENT
+
+
+    #endif // SW_CLIENT
 
     // Release EntityManager
     if (mInstance.mEntities != nullptr)
@@ -60,6 +70,7 @@ void World::terminate()
     // Release SystemManager
     mInstance.mSystems.removeSystems();
     mInstance.mSystems.setManager(nullptr);
+
 
     // Release Space
     mInstance.mSpace.clear();
@@ -87,7 +98,11 @@ void World::handleEvent(sf::Event const& event)
             }
         }
     }
-    mInstance.mSystems.getSystem<PlayerInputSystem>().handleEvent(event);
+
+    if (mInstance.mSystems.hasSystem<PlayerInputSystem>()) // TODO : Optimize with #ifdef
+    {
+        mInstance.mSystems.getSystem<PlayerInputSystem>().handleEvent(event);
+    }
 }
 
 void World::update(sf::Time dt)
@@ -96,9 +111,18 @@ void World::update(sf::Time dt)
     mInstance.mEntities->handlePackets();
 
     // Update Entities
-    mInstance.mSystems.getSystem<BaseSystem>().update();
-    mInstance.mSystems.getSystem<MovementSystem>().update(dt);
-    mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
+    if (mInstance.mSystems.hasSystem<BaseSystem>())
+    {
+        mInstance.mSystems.getSystem<BaseSystem>().update();
+    }
+    if (mInstance.mSystems.hasSystem<MovementSystem>())
+    {
+        mInstance.mSystems.getSystem<MovementSystem>().update(dt);
+    }
+    if (mInstance.mSystems.hasSystem<PlayerInputSystem>())
+    {
+        mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
+    }
 
     // Background
     mInstance.mSpace.update(mInstance.mView);
@@ -113,15 +137,36 @@ void World::render(sf::RenderTarget& target, sf::RenderStates states)
     target.draw(mInstance.mSpace,states);
 
     // Entities
-    mInstance.mSystems.getSystem<RenderSystem>().render(target,states);
+    if (mInstance.mSystems.hasSystem<RenderSystem>())
+    {
+        mInstance.mSystems.getSystem<RenderSystem>().render(target,states);
+    }
 
     target.setView(old);
 }
 
+bool World::isClient()
+{
+    #ifdef SW_CLIENT
+    return true;
+    #endif
+    return false;
+}
+
+bool World::isServer()
+{
+    #ifdef SW_SERVER
+    return true;
+    #endif
+    return false;
+}
+
+#ifdef SW_CLIENT
 sf::TcpSocket& World::getSocket()
 {
     return mInstance.mSocket;
 }
+#endif
 
 ses::EntityManager& World::getEntities()
 {
