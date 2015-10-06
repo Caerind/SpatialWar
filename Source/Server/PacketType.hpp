@@ -1,24 +1,23 @@
 #ifndef PACKETTYPE_HPP_INCLUDED
 #define PACKETTYPE_HPP_INCLUDED
 
-namespace Server2Client
+namespace Packet
 {
     enum Type
     {
         None = 0,
+        // Server To Client
         ClientJoined,
         ClientLeft,
         ServerStopped,
-    };
-}
+        ServerMessage,
 
-namespace Client2Server
-{
-    enum Type
-    {
-        None = 0,
+
+        // Client To Server
         Login,
         Disconnect,
+        ClientMessage,
+
     };
 }
 

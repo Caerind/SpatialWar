@@ -18,41 +18,40 @@ Server::Server()
     mClientTimeoutTime = sf::seconds(3.0f);
     mUpdateInterval = sf::seconds(1.f/60.f);
 
-	ah::Application::instance() << "Game Server Version 0.1";
-	ah::Application::instance() << " - Max Players : " + lp::to_string(mMaxPlayers);
-	ah::Application::instance() << " - Server Port : " + lp::to_string(mPort);
-	ah::Application::instance() << "Game Server Version 0.1";
-
     mListener.setBlocking(false);
 	mPeers[0].reset(new Peer());
 }
 
 void Server::start()
 {
-    ah::Application::instance() << "Starting server...";
+    ah::Application::instance() << "[Server] Game Server Version 0.1";
+	ah::Application::instance() << "[Server]  - Max Players : " + lp::to_string(mMaxPlayers);
+	ah::Application::instance() << "[Server]  - Server Port : " + lp::to_string(mPort);
+
+    ah::Application::instance() << "[Server] Starting server...";
 
     mRunning = true;
 
     mThread.launch();
 
-    ah::Application::instance() << "Server started !";
+    ah::Application::instance() << "[Server] Server started !";
 }
 
 void Server::stop()
 {
-    ah::Application::instance() << "Stopping server";
+    ah::Application::instance() << "[Server] Stopping server";
 
     setListening(false);
 
     sf::Packet packet;
-    packet << Server2Client::ServerStopped;
+    packet << Packet::ServerStopped;
     sendToAll(packet);
 
     mRunning = false;
 
     mThread.wait();
 
-    ah::Application::instance() << "Server stopped !";
+    ah::Application::instance() << "[Server] Server stopped !";
 }
 
 bool Server::isRunning() const
@@ -79,6 +78,14 @@ void Server::sendToPeer(sf::Packet& packet, unsigned int peerId)
         {
             mPeers[i]->send(packet);
         }
+    }
+}
+
+void Server::sendToPeer(sf::Packet& packet, Peer& peer)
+{
+    if (peer.isReady())
+    {
+        peer.send(packet);
     }
 }
 
@@ -163,23 +170,6 @@ void Server::handlePacket(sf::Packet& packet, Peer& peer, bool& detectedTimeout)
 
     switch (packetType)
     {
-        case Client2Server::Login:
-        {
-            std::string username, password;
-            packet >> username >> password;
-
-            // if ok
-            // - On lui envoit tout
-            // - On dit aux autres qu'il est la
-            // - On l'ecrit dans la console
-        } break;
-
-        case Client2Server::Disconnect:
-        {
-            peer.setTimedOut(true);
-            detectedTimeout = true;
-        } break;
-
         default: break;
     }
 }
@@ -207,8 +197,18 @@ void Server::handleDisconnections()
 	{
 		if ((*itr)->hasTimedOut())
 		{
-            // Un joueur s'est barré dans la console
-            // On envoit aussi un packet aux gens
+            if ((*itr)->isConnected())
+            {
+                std::string name = (*itr)->getName();
+                ah::Application::instance() << "[Server] " + name + " left the game";
+
+                sf::Packet packet;
+                packet << Packet::ClientLeft << name;
+                sendToAll(packet);
+
+                (*itr)->setName("");
+                (*itr)->setReady(false);
+            }
 
 			mConnectedPlayers--;
 

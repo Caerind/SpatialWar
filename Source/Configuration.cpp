@@ -7,14 +7,34 @@ ah::ActionTarget::ActionMapPtr Configuration::getPlayerInput()
     return mInstance.mPlayerInput;
 }
 
-sf::IpAddress& Configuration::getServerAddress()
+sf::IpAddress Configuration::getServerAddress()
 {
     return mInstance.mAddress;
 }
 
-unsigned short& Configuration::getServerPort()
+unsigned short Configuration::getServerPort()
 {
     return mInstance.mPort;
+}
+
+void Configuration::setUsername(std::string const& username)
+{
+    mInstance.mUsername = username;
+}
+
+void Configuration::setPassword(std::string const& password)
+{
+    mInstance.mPassword = password;
+}
+
+std::string Configuration::getUsername()
+{
+    return mInstance.mUsername;
+}
+
+std::string Configuration::getPassword()
+{
+    return mInstance.mPassword;
 }
 
 Configuration::Configuration()
@@ -32,6 +52,8 @@ Configuration::Configuration()
 
     mAddress = sf::IpAddress::LocalHost;
     mPort = 4567;
+    mUsername = "test";
+    mPassword = "test";
 }
 
 Configuration::~Configuration()

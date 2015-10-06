@@ -23,8 +23,8 @@ class Peer
 
         unsigned int getId() const;
         sf::Time getLastPacketTime() const;
-        bool isReady() const;
-        bool isConnected() const;
+        bool isReady() const; // ready mean the player is linked to the server and can receive packets
+        bool isConnected() const; // connected mean the player is authentified as a real player (he is playing)
         bool hasTimedOut() const;
         std::string getName() const;
 

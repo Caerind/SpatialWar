@@ -18,6 +18,9 @@
 #include "Systems.hpp"
 #include "Components.hpp"
 
+#include "Server/PacketType.hpp"
+#include "Server/Message.hpp"
+
 class World
 {
     public:

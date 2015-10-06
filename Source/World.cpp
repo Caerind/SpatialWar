@@ -46,9 +46,36 @@ void World::init()
     mInstance.mSocket.setBlocking(true);
     while (mInstance.mSocket.connect(Configuration::getServerAddress(),Configuration::getServerPort()) != sf::Socket::Done)
     {
-        sf::sleep(sf::seconds(0.001f));
+        sf::sleep(sf::seconds(0.1f));
+    }
+    sf::Packet loginPacket;
+    loginPacket << Packet::Login << Configuration::getUsername() << Configuration::getPassword();
+    while (mInstance.mSocket.send(loginPacket) != sf::Socket::Done)
+    {
+        sf::sleep(sf::seconds(0.1f));
     }
     mInstance.mSocket.setBlocking(false);
+    bool connected = false;
+    do
+    {
+        sf::Packet packet;
+        while (mInstance.mSocket.receive(packet) == sf::Socket::Done)
+        {
+            sf::Int32 packetType;
+            packet >> packetType;
+
+            if (packetType == Packet::ClientJoined)
+            {
+                std::string username;
+                packet >> username;
+
+                if (username == Configuration::getUsername())
+                {
+                    connected = true;
+                }
+            }
+        }
+    } while (!connected);
 
     #endif // SW_CLIENT
 }

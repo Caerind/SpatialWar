@@ -13,6 +13,7 @@
 #include "PacketType.hpp"
 #include "Peer.hpp"
 #include "Settings.hpp"
+#include "Message.hpp"
 
 namespace srv
 {
@@ -28,6 +29,7 @@ class Server
 
         void sendToAll(sf::Packet& packet);
         void sendToPeer(sf::Packet& packet, unsigned int peerId);
+        void sendToPeer(sf::Packet& packet, Peer& peer);
 
         Settings& getSettings();
 

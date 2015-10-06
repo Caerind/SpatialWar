@@ -9,6 +9,8 @@ int main()
 
     srv::Settings& serverSettings = server.getSettings();
 
+    ah::Application::instance().openLog(serverSettings.getString("logfile"));
+
     srv::CommandHandler command(server);
     std::string line;
 

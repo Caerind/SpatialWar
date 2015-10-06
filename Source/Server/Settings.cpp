@@ -63,7 +63,7 @@ bool Settings::saveToFile(std::string const& name)
 
 void Settings::createDefault()
 {
-    mSettings["logfile"] = "server.log";
+    mSettings["logfile"] = "Assets/Server/server.log";
     mSettings["maxplayers"] = lp::to_string(10);
     mSettings["port"] = lp::to_string(4567);
 }
