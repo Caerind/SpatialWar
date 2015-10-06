@@ -7,9 +7,14 @@ ah::ActionTarget::ActionMapPtr Configuration::getPlayerInput()
     return mInstance.mPlayerInput;
 }
 
-sf::TcpSocket& Configuration::getSocket()
+sf::IpAddress& Configuration::getServerAddress()
 {
-    return mInstance.mSocket;
+    return mInstance.mAddress;
+}
+
+unsigned short& Configuration::getServerPort()
+{
+    return mInstance.mPort;
 }
 
 Configuration::Configuration()

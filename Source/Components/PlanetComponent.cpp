@@ -5,6 +5,7 @@ PlanetComponent::PlanetComponent(PlanetComponent::Type type)
 : ses::Component()
 , mType(type)
 {
+    #ifdef SW_CLIENT
     sf::Texture* texture = nullptr;
     if (mType == PlanetComponent::Type::Planet)
     {
@@ -24,6 +25,7 @@ PlanetComponent::PlanetComponent(PlanetComponent::Type type)
         mShape.setRadius(texture->getSize().x * 0.5f);
         mShape.setTexture(texture);
     }
+    #endif
 }
 
 std::string PlanetComponent::getId()

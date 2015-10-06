@@ -2,7 +2,7 @@
 
 LoadingState::LoadingState(ah::StateManager& manager)
 : ah::State(manager)
-, mThread(std::bind(&World::init,false,false))
+, mThread(std::bind(&World::init))
 {
     mType = LoadingState::getID();
 
@@ -25,7 +25,7 @@ LoadingState::LoadingState(ah::StateManager& manager)
         requestPop();
         requestPush(GameState::getID());
     });
-    mTimer.restart(sf::seconds(1.f));
+    mTimer.restart(sf::seconds(2.f));
 
     mThread.launch();
 }

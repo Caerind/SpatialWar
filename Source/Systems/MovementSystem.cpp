@@ -214,7 +214,11 @@ void MovementSystem::handlePacket(sf::Packet& packet)
 
             if (mEntityManager->hasComponent<PlayerComponent>(entityId))
             {
-                mEntityManager->getComponent<PlayerComponent>(entityId).getView().move(mvt);
+                 sf::View* v = mEntityManager->getComponent<PlayerComponent>(entityId).getView();
+                 if (v != nullptr)
+                 {
+                     v->move(mvt);
+                 }
             }
         } break;
 
@@ -231,7 +235,11 @@ void MovementSystem::handlePacket(sf::Packet& packet)
 
             if (mEntityManager->hasComponent<PlayerComponent>(entityId))
             {
-                mEntityManager->getComponent<PlayerComponent>(entityId).getView().setCenter(position);
+                sf::View* v = mEntityManager->getComponent<PlayerComponent>(entityId).getView();
+                if (v != nullptr)
+                {
+                    v->setCenter(position);
+                }
             }
         } break;
 

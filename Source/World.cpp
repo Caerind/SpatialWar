@@ -2,11 +2,9 @@
 
 World World::mInstance;
 
-void World::init(bool onlineMode, bool server)
+void World::init()
 {
     terminate();
-    mInstance.mOnlineMode = onlineMode;
-    mInstance.mServer = server;
 
     // Load EntityManager
     mInstance.mEntities = std::shared_ptr<ses::EntityManager>(new EntityManager());
@@ -29,8 +27,8 @@ void World::init(bool onlineMode, bool server)
     mInstance.mView = ah::Application::instance().getDefaultView();
     mInstance.mView.zoom(8.f);
 
-    // Load Game
-    if (!isOnline() && !isServer())
+    // Load Game -> Moved To Server Loading
+    /*if (true)
     {
         sf::Int32 planetId = mInstance.mEntities->usePrefab("Planet");
 
@@ -38,11 +36,21 @@ void World::init(bool onlineMode, bool server)
         mInstance.mEntities->getComponent<BaseComponent>(playerId).setPosition(2500.f,2500.f);
 
         mInstance.mView.setCenter(mInstance.mEntities->getComponent<BaseComponent>(playerId).getPosition());
+    }*/
+
+    // Init Socket
+    mInstance.mSocket.setBlocking(true);
+    while (mInstance.mSocket.connect(Configuration::getServerAddress(),Configuration::getServerPort()) != sf::Socket::Done)
+    {
+        sf::sleep(sf::seconds(0.001f));
     }
+    mInstance.mSocket.setBlocking(false);
 }
 
 void World::terminate()
 {
+    // Deconnect
+
     // Release EntityManager
     if (mInstance.mEntities != nullptr)
     {
@@ -87,19 +95,13 @@ void World::update(sf::Time dt)
     // Handle Packets
     mInstance.mEntities->handlePackets();
 
-    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-    {
-        // Update Entities
-        mInstance.mSystems.getSystem<BaseSystem>().update();
-        mInstance.mSystems.getSystem<MovementSystem>().update(dt);
-        mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
+    // Update Entities
+    mInstance.mSystems.getSystem<BaseSystem>().update();
+    mInstance.mSystems.getSystem<MovementSystem>().update(dt);
+    mInstance.mSystems.getSystem<PlayerInputSystem>().update(dt);
 
-
-        // Background
-        mInstance.mSpace.update(mInstance.mView);
-    }
-
-    ah::Application::instance().setDebugInfo("Entities",lp::to_string(mInstance.mEntities->entitiesCount()));
+    // Background
+    mInstance.mSpace.update(mInstance.mView);
 }
 
 void World::render(sf::RenderTarget& target, sf::RenderStates states)
@@ -116,14 +118,9 @@ void World::render(sf::RenderTarget& target, sf::RenderStates states)
     target.setView(old);
 }
 
-bool World::isOnline()
+sf::TcpSocket& World::getSocket()
 {
-    return mInstance.mOnlineMode;
-}
-
-bool World::isServer()
-{
-    return mInstance.mServer;
+    return mInstance.mSocket;
 }
 
 ses::EntityManager& World::getEntities()
@@ -152,8 +149,7 @@ Space& World::getSpace()
 }
 
 World::World()
-: mOnlineMode(false)
-, mEntities(nullptr)
+: mEntities(nullptr)
 , mSystems(nullptr)
 {
 }

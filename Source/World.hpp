@@ -7,6 +7,8 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/View.hpp>
 
+#include <SFML/Network/TcpSocket.hpp>
+
 #include "EntityManager.hpp"
 #include "../Lib/EntitySystem/SystemManager.hpp"
 
@@ -19,15 +21,14 @@
 class World
 {
     public:
-        static void init(bool onlineMode, bool server);
+        static void init();
         static void terminate();
 
         static void handleEvent(sf::Event const& event);
         static void update(sf::Time dt);
         static void render(sf::RenderTarget& target, sf::RenderStates states);
 
-        static bool isOnline();
-        static bool isServer();
+        static sf::TcpSocket& getSocket();
         static ses::EntityManager& getEntities();
         static ses::SystemManager& getSystems();
         static ah::ResourceHolder& getResources();
@@ -40,8 +41,7 @@ class World
 
         static World mInstance;
 
-        bool mOnlineMode;
-        bool mServer;
+        sf::TcpSocket mSocket;
         ses::EntityManager::Ptr mEntities;
         ses::SystemManager mSystems;
         ah::ResourceHolder mResources;

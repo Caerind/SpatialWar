@@ -4,7 +4,9 @@
 ResourceComponent::ResourceComponent()
 : ses::Component()
 {
+    #ifdef SW_CLIENT
     // TODO : mSprite.setTexture(World::getResources().getTexture("resources"));
+    #endif
 }
 
 std::string ResourceComponent::getId()

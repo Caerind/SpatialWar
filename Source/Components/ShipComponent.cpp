@@ -8,7 +8,9 @@ ShipComponent::ShipComponent()
 , mArmorId(0)
 , mGunId(0)
 {
+    #ifdef SW_CLIENT
     mSprite.setTexture(World::getResources().getTexture("ship"));
+    #endif
 }
 
 std::string ShipComponent::getId()
